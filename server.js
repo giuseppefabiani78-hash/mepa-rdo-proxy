@@ -1,0 +1,68 @@
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
+
+const DEFAULT_PAYLOAD = {
+  isArchive: false,
+  strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
+  categoria: [],
+  idt: "",
+  orderBy: { campo: "dataPubblicazione", verso: "desc" },
+  paginazione: { pagina: 1, itemPagina: 50 },
+  tempo: { dataDa: null, dataA: null }
+};
+
+app.use(cors());
+app.use(express.json());
+
+// Health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'MEPA RdO Proxy', timestamp: new Date().toISOString() });
+});
+
+// Proxy endpoint
+app.get('/rdo', async (req, res) => {
+  try {
+    const pagina = parseInt(req.query.pagina) || 1;
+    const itemPagina = parseInt(req.query.itemPagina) || 50;
+    const verso = req.query.verso || 'desc';
+    const campo = req.query.campo || 'dataPubblicazione';
+
+    const payload = {
+      ...DEFAULT_PAYLOAD,
+      orderBy: { campo, verso },
+      paginazione: { pagina, itemPagina }
+    };
+
+    const response = await fetch(MEPA_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': 'https://www.acquistinretepa.it',
+        'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=RDO',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      return res.status(502).json({ error: `MEPA upstream error: ${response.status}` });
+    }
+
+    const data = await response.json();
+    res.json(data);
+
+  } catch (err) {
+    console.error('Proxy error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`MEPA Proxy running on port ${PORT}`);
+});
