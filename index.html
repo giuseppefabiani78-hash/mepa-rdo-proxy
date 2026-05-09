@@ -1,114 +1,296 @@
-const express = require('express');
-const cors = require('cors');
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RdO Aperte MEPA | MepaLab24</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #F7F9FC; color: #1A1A2E; font-size: 14px; }
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+/* HEADER */
+header { background: #fff; border-bottom: 3px solid #1B4FD8; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-badge { background: #1B4FD8; color: #fff; font-weight: 800; font-size: 15px; padding: 5px 10px; border-radius: 6px; letter-spacing: -0.5px; }
+.logo-text { font-size: 18px; font-weight: 700; color: #1B4FD8; letter-spacing: -0.5px; }
+.logo-sub { font-size: 10px; color: #6B7280; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.wa-header { background: #25D366; color: #fff; border: none; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.wa-header:hover { background: #1daa53; }
 
-const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
+/* HERO BAND */
+.hero { background: linear-gradient(135deg, #1B4FD8 0%, #0F3BA8 100%); color: #fff; padding: 20px 20px 18px; text-align: center; }
+.hero h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.hero p { font-size: 13px; opacity: 0.85; }
 
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Accept'] }));
-app.options('*', cors());
-app.use(express.json());
+/* TOOLBAR */
+.toolbar { background: #fff; border-bottom: 1px solid #E5E7EB; padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 65px; z-index: 90; }
+#search { flex: 1; min-width: 200px; border: 1px solid #D1D5DB; padding: 8px 14px; font-size: 13px; border-radius: 6px; outline: none; }
+#search:focus { border-color: #1B4FD8; box-shadow: 0 0 0 3px rgba(27,79,216,0.1); }
+#sort-sel { border: 1px solid #D1D5DB; padding: 8px 10px; font-size: 13px; border-radius: 6px; outline: none; background: #fff; }
+#cnt { font-size: 12px; color: #6B7280; white-space: nowrap; margin-left: auto; }
+#load-btn { background: #1B4FD8; color: #fff; border: none; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+#load-btn:hover { background: #1640b0; }
+#load-btn:disabled { background: #9CA3AF; cursor: default; }
 
-app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'MEPA RdO Proxy', timestamp: new Date().toISOString() });
-});
+/* MAIN */
+main { padding: 16px; max-width: 1400px; margin: 0 auto; }
 
-async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc') {
-  const payload = {
-    isArchive: false,
-    strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
-    categoria: [],
-    idt: "",
-    orderBy: { campo, verso },
-    paginazione: { pagina, itemPagina },
-    tempo: { dataDa: null, dataA: null }
-  };
-  const response = await fetch(MEPA_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Origin': 'https://www.acquistinretepa.it',
-      'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=RDO',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    },
-    body: JSON.stringify(payload)
+#err { display: none; background: #FEF2F2; border-left: 4px solid #EF4444; padding: 12px 16px; color: #B91C1C; border-radius: 0 8px 8px 0; margin-bottom: 16px; font-size: 13px; }
+
+#empty { text-align: center; padding: 60px 20px; color: #6B7280; }
+#empty .ico { font-size: 48px; margin-bottom: 16px; }
+#empty h2 { font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+#empty p { font-size: 13px; }
+
+/* CARDS GRID */
+#grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+
+.card { background: #fff; border-radius: 10px; border: 1px solid #E5E7EB; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow 0.2s, transform 0.1s; }
+.card:hover { box-shadow: 0 4px 16px rgba(27,79,216,0.12); transform: translateY(-1px); }
+
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.rdo-num { font-family: monospace; font-size: 11px; font-weight: 700; color: #1B4FD8; background: #EEF2FF; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.cat-badge { font-size: 10px; color: #059669; background: #ECFDF5; padding: 2px 7px; border-radius: 4px; font-weight: 500; text-align: right; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.card-title { font-size: 13px; font-weight: 600; color: #111827; line-height: 1.4; }
+
+.card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.meta-item { display: flex; flex-direction: column; gap: 1px; }
+.meta-label { font-size: 10px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
+.meta-value { font-size: 12px; color: #374151; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta-value.valore { font-family: monospace; font-weight: 700; color: #111827; }
+.meta-value.scad { font-family: monospace; }
+.meta-value.urg { color: #DC2626; font-weight: 700; }
+.days-badge { font-size: 10px; color: #6B7280; }
+.days-badge.urg { color: #DC2626; }
+
+.card-footer { margin-top: 4px; }
+.wa-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #25D366; color: #fff; border: none; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.wa-btn:hover { background: #1daa53; }
+.wa-icon { font-size: 16px; }
+
+/* PAGINATION */
+.pag { display: flex; justify-content: center; align-items: center; gap: 5px; padding: 20px 0; flex-wrap: wrap; }
+.pag button { border: 1px solid #D1D5DB; background: #fff; padding: 6px 12px; font-size: 12px; cursor: pointer; border-radius: 6px; color: #374151; transition: all 0.15s; }
+.pag button:hover:not(:disabled) { background: #EEF2FF; border-color: #1B4FD8; color: #1B4FD8; }
+.pag button.active { background: #1B4FD8; color: #fff; border-color: #1B4FD8; }
+.pag button:disabled { opacity: 0.4; cursor: default; }
+
+#ts { text-align: center; font-size: 11px; color: #9CA3AF; padding: 8px 0 16px; }
+
+/* FOOTER */
+footer { background: #1B4FD8; color: rgba(255,255,255,0.8); text-align: center; padding: 16px; font-size: 12px; }
+footer a { color: #fff; }
+
+/* SPINNER */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin 1s linear infinite; }
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 16px; }
+  #grid { grid-template-columns: 1fr; }
+  .logo-text { font-size: 15px; }
+  .wa-header span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="https://www.mepalab24.com">
+    <div class="logo-badge">ML24</div>
+    <div>
+      <div class="logo-text">MepaLab24</div>
+      <div class="logo-sub">Consulenza MEPA per imprese e PA</div>
+    </div>
+  </a>
+  <div class="header-right">
+    <a class="wa-header" href="https://wa.me/393517128322?text=Ciao%20MepaLab24%2C%20ho%20bisogno%20di%20consulenza%20MEPA" target="_blank">
+      💬 <span>Contattaci</span>
+    </a>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>📋 RdO Aperte su MEPA</h1>
+  <p>Trova le gare aperte oggi e richiedi subito supporto per partecipare</p>
+</div>
+
+<div class="toolbar" id="toolbar-wrap">
+  <input type="text" id="search" placeholder="🔍  Cerca titolo, ente, categoria…" oninput="applyFilter()" style="display:none">
+  <select id="sort-sel" onchange="applyFilter()" style="display:none">
+    <option value="dataPubblicazione|desc">Più recenti</option>
+    <option value="dataScadenzaBando|asc">Scadenza prima</option>
+    <option value="valore|desc">Valore ↓</option>
+    <option value="valore|asc">Valore ↑</option>
+  </select>
+  <span id="cnt" style="display:none"></span>
+  <button id="load-btn" onclick="loadRdo()">↻ Carica RdO aperte</button>
+</div>
+
+<main>
+  <div id="err"></div>
+  <div id="empty">
+    <div class="ico">📋</div>
+    <h2>Trova la tua prossima gara MEPA</h2>
+    <p>Clicca <strong>Carica RdO aperte</strong> per vedere tutte le Richieste di Offerta attive oggi su acquistinretepa.it</p>
+  </div>
+  <div id="grid"></div>
+  <div class="pag" id="pag"></div>
+  <div id="ts"></div>
+</main>
+
+<footer>
+  © 2026 <a href="https://www.mepalab24.com">MepaLab24</a> · Dati in tempo reale da acquistinretepa.it · 
+  <a href="https://wa.me/393517128322">WhatsApp: +39 351 712 8322</a>
+</footer>
+
+<script>
+const PROXY = 'https://mepa-rdo-proxy.onrender.com/rdo';
+const WA = '393517128322';
+const PER = 24;
+let all = [], filt = [], pg = 1;
+
+function fmt(v) {
+  if (!v) return '—';
+  const n = parseFloat(String(v).replace(',', '.'));
+  return isNaN(n) ? '—' : n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+}
+function fmtD(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleDateString('it-IT'); } catch(e) { return iso; }
+}
+function dl(iso) {
+  if (!iso) return null;
+  return Math.ceil((new Date(iso) - new Date()) / 86400000);
+}
+function waLink(r) {
+  const testo = `Ciao MepaLab24! Sono interessato alla RdO n° ${r.numeroRdo} — "${(r.titoloBando||'').substring(0,60)}" su MEPA. Vorrei ricevere supporto per partecipare.`;
+  return `https://wa.me/${WA}?text=${encodeURIComponent(testo)}`;
+}
+
+async function loadRdo() {
+  const btn = document.getElementById('load-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">↻</span> Caricamento…';
+  document.getElementById('err').style.display = 'none';
+
+  try {
+    const res = await fetch(PROXY);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    all = data.listaRdoAperte || [];
+    if (!all.length) throw new Error('Nessuna RdO trovata. Riprova tra poco.');
+
+    document.getElementById('search').style.display = 'block';
+    document.getElementById('sort-sel').style.display = 'block';
+    document.getElementById('cnt').style.display = 'block';
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('ts').textContent = 'Dati aggiornati: ' + new Date().toLocaleString('it-IT') + ' · Fonte: acquistinretepa.it';
+    applyFilter();
+  } catch(e) {
+    const eb = document.getElementById('err');
+    eb.style.display = 'block';
+    eb.textContent = '❌ ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '↻ Ricarica';
+  }
+}
+
+function applyFilter() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const [sk, sd] = document.getElementById('sort-sel').value.split('|');
+
+  filt = all.filter(r =>
+    [r.numeroRdo, r.titoloBando, r.stazioneAppaltante, r.descrizioneEnte,
+     r.categorieMerceologiche?.[0]?.descrizione].join(' ').toLowerCase().includes(q)
+  );
+
+  filt.sort((a, b) => {
+    let av = a[sk] ?? '', bv = b[sk] ?? '';
+    if (sk === 'valore') {
+      av = parseFloat(String(av).replace(',','.')) || 0;
+      bv = parseFloat(String(bv).replace(',','.')) || 0;
+    }
+    return sd === 'asc' ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
   });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+
+  document.getElementById('cnt').innerHTML =
+    '<strong style="color:#1B4FD8">' + filt.length + '</strong> RdO trovate';
+  pg = 1;
+  render();
 }
 
-function findLista(obj, depth = 0) {
-  if (depth > 5 || !obj || typeof obj !== 'object') return null;
-  if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) return obj;
-  for (const key of Object.keys(obj)) {
-    const found = findLista(obj[key], depth + 1);
-    if (found) return found;
-  }
-  return null;
+function render() {
+  const slice = filt.slice((pg-1)*PER, pg*PER);
+  const grid = document.getElementById('grid');
+
+  grid.innerHTML = slice.map(r => {
+    const d = dl(r.dataScadenzaBando);
+    const urg = d !== null && d <= 5;
+    const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
+    const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
+    return `
+    <div class="card">
+      <div class="card-header">
+        <span class="rdo-num">RdO ${r.numeroRdo||'—'}</span>
+        ${cat ? `<span class="cat-badge" title="${cat}">${cat}</span>` : ''}
+      </div>
+      <div class="card-title">${r.titoloBando||'—'}</div>
+      <div class="card-meta">
+        <div class="meta-item">
+          <span class="meta-label">Stazione Appaltante</span>
+          <span class="meta-value" title="${ente}">${ente}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Valore stimato</span>
+          <span class="meta-value valore">${fmt(r.valore)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Pubblicata</span>
+          <span class="meta-value">${fmtD(r.dataPubblicazione)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Scadenza</span>
+          <span class="meta-value scad ${urg?'urg':''}">${urg?'⚠ ':''}${fmtD(r.dataScadenzaBando)}<br>
+          <span class="days-badge ${urg?'urg':''}">${d !== null ? d + ' giorni rimasti' : ''}</span></span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a class="wa-btn" href="${waLink(r)}" target="_blank">
+          <span class="wa-icon">💬</span> Vuoi partecipare? Richiedi consulenza
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderPag();
 }
 
-function findTotale(obj, depth = 0) {
-  if (depth > 5 || !obj || typeof obj !== 'object') return null;
-  for (const key of ['totale', 'total', 'totalElements', 'count']) {
-    if (typeof obj[key] === 'number' && obj[key] > 0) return obj[key];
+function renderPag() {
+  const tot = Math.ceil(filt.length / PER);
+  const el = document.getElementById('pag');
+  if (tot <= 1) { el.innerHTML = ''; return; }
+  let h = `<button onclick="goP(${pg-1})" ${pg===1?'disabled':''}>← Prec</button>`;
+  for (let i = 1; i <= tot; i++) {
+    if (i===1||i===tot||Math.abs(i-pg)<=2)
+      h += `<button onclick="goP(${i})" class="${i===pg?'active':''}">${i}</button>`;
+    else if (Math.abs(i-pg)===3)
+      h += `<span style="color:#9CA3AF">…</span>`;
   }
-  for (const key of Object.keys(obj)) {
-    if (typeof obj[key] === 'object') {
-      const found = findTotale(obj[key], depth + 1);
-      if (found) return found;
-    }
-  }
-  return null;
+  h += `<button onclick="goP(${pg+1})" ${pg===tot?'disabled':''}>Succ →</button>`;
+  el.innerHTML = h;
 }
 
-app.get('/debug', async (req, res) => {
-  try {
-    const raw = await fetchPagina(1, 50);
-    res.json(raw);
-  } catch(err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/rdo', async (req, res) => {
-  try {
-    const campo = req.query.campo || 'dataPubblicazione';
-    const verso = req.query.verso || 'desc';
-    const ITEMS = 100;
-
-    // Prima chiamata per sapere il totale
-    const first = await fetchPagina(1, ITEMS, campo, verso);
-    const lista1 = findLista(first) || [];
-    const totale = findTotale(first) || lista1.length;
-
-    console.log(`Totale RdO: ${totale}, prima pagina: ${lista1.length}`);
-
-    let tuttiRdo = [...lista1];
-
-    if (totale > ITEMS) {
-      const pagine = Math.ceil(totale / ITEMS);
-      const promises = [];
-      for (let p = 2; p <= pagine; p++) {
-        promises.push(fetchPagina(p, ITEMS, campo, verso));
-      }
-      const results = await Promise.all(promises);
-      for (const r of results) {
-        const lista = findLista(r) || [];
-        tuttiRdo = tuttiRdo.concat(lista);
-      }
-    }
-
-    console.log(`Totale RdO caricate: ${tuttiRdo.length}`);
-    res.json({ listaRdoAperte: tuttiRdo, totale: tuttiRdo.length });
-
-  } catch (err) {
-    console.error('Proxy error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`MEPA Proxy running on port ${PORT}`);
-});
+function goP(p) {
+  const tot = Math.ceil(filt.length/PER);
+  if (p<1||p>tot) return;
+  pg = p; render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
