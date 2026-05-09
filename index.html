@@ -4,138 +4,310 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RdO Aperte MEPA | MepaLab24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+:root {
+  --ink: #0F0F0F;
+  --ink-2: #3D3D3D;
+  --ink-3: #7A7A7A;
+  --border: #E8E8E8;
+  --bg: #F5F5F3;
+  --white: #FFFFFF;
+  --pink: #FF1493;
+  --pink-soft: #FF149315;
+  --green-wa: #128C7E;
+  --green-wa-hover: #0a6b60;
+  --accent: #FF1493;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.1), 0 12px 32px rgba(0,0,0,0.06);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: #F7F9FC; color: #1A1A2E; font-size: 14px; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* HEADER */
-header { background: #fff; border-bottom: 3px solid #1B4FD8; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.logo-badge { background: #1B4FD8; color: #fff; font-weight: 800; font-size: 15px; padding: 5px 10px; border-radius: 6px; letter-spacing: -0.5px; }
-.logo-text { font-size: 18px; font-weight: 700; color: #1B4FD8; letter-spacing: -0.5px; }
-.logo-sub { font-size: 10px; color: #6B7280; margin-top: 1px; }
-.header-right { display: flex; align-items: center; gap: 10px; }
-.wa-header { background: #25D366; color: #fff; border: none; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-.wa-header:hover { background: #1daa53; }
+/* ── HEADER ── */
+header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo-link { display: flex; align-items: center; text-decoration: none; }
+.logo-link img { height: 36px; width: auto; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.btn-wa-header {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--green-wa); color: #fff;
+  padding: 8px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none; white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-wa-header:hover { background: var(--green-wa-hover); }
+.btn-wa-header svg { flex-shrink: 0; }
+.btn-refresh {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent; color: var(--ink-3);
+  border: 1px solid var(--border);
+  padding: 7px 12px; border-radius: 8px;
+  font-size: 12px; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-refresh:hover { background: var(--bg); color: var(--ink-2); }
+.btn-refresh:disabled { opacity: 0.4; cursor: default; }
 
-/* HERO BAND */
-.hero { background: linear-gradient(135deg, #1B4FD8 0%, #0F3BA8 100%); color: #fff; padding: 20px 20px 18px; text-align: center; }
-.hero h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-.hero p { font-size: 13px; opacity: 0.85; }
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 40px 24px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(255,20,147,0.18) 0%, transparent 70%);
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 20px;
+  margin-bottom: 16px;
+}
+.hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); display: inline-block; animation: pulse 2s infinite; }
+.hero h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.5px; position: relative; }
+.hero h1 em { color: var(--pink); font-style: normal; }
+.hero p { font-size: 14px; color: rgba(255,255,255,0.55); position: relative; max-width: 480px; margin: 0 auto; }
 
-/* TOOLBAR */
-.toolbar { background: #fff; border-bottom: 1px solid #E5E7EB; padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 65px; z-index: 90; }
-#search { flex: 1; min-width: 200px; border: 1px solid #D1D5DB; padding: 8px 14px; font-size: 13px; border-radius: 6px; outline: none; }
-#search:focus { border-color: #1B4FD8; box-shadow: 0 0 0 3px rgba(27,79,216,0.1); }
-#sort-sel { border: 1px solid #D1D5DB; padding: 8px 10px; font-size: 13px; border-radius: 6px; outline: none; background: #fff; }
-#cnt { font-size: 12px; color: #6B7280; white-space: nowrap; margin-left: auto; }
-#load-btn { background: #1B4FD8; color: #fff; border: none; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-#load-btn:hover { background: #1640b0; }
-#load-btn:disabled { background: #9CA3AF; cursor: default; }
+/* ── TOOLBAR ── */
+.toolbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  position: sticky; top: 64px; z-index: 90;
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; }
+#search {
+  width: 100%; border: 1px solid var(--border);
+  padding: 9px 14px 9px 36px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  border-radius: 8px; outline: none;
+  background: var(--bg); color: var(--ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#search:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,20,147,0.08); background: #fff; }
+#sort-sel {
+  border: 1px solid var(--border); padding: 9px 12px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  border-radius: 8px; outline: none; background: var(--bg);
+  color: var(--ink); cursor: pointer;
+}
+#sort-sel:focus { border-color: var(--pink); }
+#cnt {
+  font-size: 12px; color: var(--ink-3);
+  white-space: nowrap; margin-left: auto;
+  font-family: 'DM Mono', monospace;
+}
+#cnt strong { color: var(--pink); }
 
-/* MAIN */
-main { padding: 16px; max-width: 1400px; margin: 0 auto; }
+/* ── MAIN ── */
+main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 
-#err { display: none; background: #FEF2F2; border-left: 4px solid #EF4444; padding: 12px 16px; color: #B91C1C; border-radius: 0 8px 8px 0; margin-bottom: 16px; font-size: 13px; }
-
-#empty { text-align: center; padding: 60px 20px; color: #6B7280; }
-#empty .ico { font-size: 48px; margin-bottom: 16px; }
-#empty h2 { font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+/* ── LOADING / ERROR / EMPTY ── */
+#err {
+  display: none;
+  background: #FFF1F1; border: 1px solid #FFD5D5;
+  padding: 14px 18px; color: #C0392B;
+  border-radius: var(--radius); margin-bottom: 16px; font-size: 13px;
+}
+#empty {
+  text-align: center; padding: 80px 20px; color: var(--ink-3);
+}
+.empty-spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--pink); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+#empty h2 { font-size: 17px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
 #empty p { font-size: 13px; }
 
-/* CARDS GRID */
-#grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+/* ── GRID ── */
+#grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
 
-.card { background: #fff; border-radius: 10px; border: 1px solid #E5E7EB; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow 0.2s, transform 0.1s; }
-.card:hover { box-shadow: 0 4px 16px rgba(27,79,216,0.12); transform: translateY(-1px); }
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: fadeUp 0.3s ease both;
+}
+.card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 
-.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.rdo-num { font-family: monospace; font-size: 11px; font-weight: 700; color: #1B4FD8; background: #EEF2FF; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
-.cat-badge { font-size: 10px; color: #059669; background: #ECFDF5; padding: 2px 7px; border-radius: 4px; font-weight: 500; text-align: right; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.rdo-chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: var(--pink); background: var(--pink-soft);
+  padding: 3px 8px; border-radius: 6px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.cat-chip {
+  font-size: 10px; font-weight: 500;
+  color: var(--ink-3); background: var(--bg);
+  padding: 3px 8px; border-radius: 6px;
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  text-align: right;
+}
 
-.card-title { font-size: 13px; font-weight: 600; color: #111827; line-height: 1.4; }
+.card-title {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  line-height: 1.45; display: -webkit-box;
+  -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
 
-.card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.meta-item { display: flex; flex-direction: column; gap: 1px; }
-.meta-label { font-size: 10px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
-.meta-value { font-size: 12px; color: #374151; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.meta-value.valore { font-family: monospace; font-weight: 700; color: #111827; }
-.meta-value.scad { font-family: monospace; }
-.meta-value.urg { color: #DC2626; font-weight: 700; }
-.days-badge { font-size: 10px; color: #6B7280; }
-.days-badge.urg { color: #DC2626; }
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.meta { display: flex; flex-direction: column; gap: 2px; }
+.meta-l { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+.meta-v { font-size: 13px; color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta-v.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+.meta-v.valore { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: var(--ink); }
+.meta-v.urg { color: #D4380D; font-weight: 600; }
+.days { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
+.days.urg { color: #D4380D; }
 
-.card-footer { margin-top: 4px; }
-.wa-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #25D366; color: #fff; border: none; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
-.wa-btn:hover { background: #1daa53; }
-.wa-icon { font-size: 16px; }
+.divider { height: 1px; background: var(--border); }
 
-/* PAGINATION */
-.pag { display: flex; justify-content: center; align-items: center; gap: 5px; padding: 20px 0; flex-wrap: wrap; }
-.pag button { border: 1px solid #D1D5DB; background: #fff; padding: 6px 12px; font-size: 12px; cursor: pointer; border-radius: 6px; color: #374151; transition: all 0.15s; }
-.pag button:hover:not(:disabled) { background: #EEF2FF; border-color: #1B4FD8; color: #1B4FD8; }
-.pag button.active { background: #1B4FD8; color: #fff; border-color: #1B4FD8; }
-.pag button:disabled { opacity: 0.4; cursor: default; }
+/* ── CTA WHATSAPP ── */
+.btn-wa {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  background: var(--green-wa);
+  color: #fff; border: none;
+  padding: 11px 16px; border-radius: 9px;
+  font-size: 13px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: -0.1px;
+}
+.btn-wa:hover { background: var(--green-wa-hover); transform: scale(1.01); }
+.btn-wa:active { transform: scale(0.99); }
 
-#ts { text-align: center; font-size: 11px; color: #9CA3AF; padding: 8px 0 16px; }
+/* ── PAGINATION ── */
+.pag { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 24px 0 8px; flex-wrap: wrap; }
+.pag button {
+  border: 1px solid var(--border); background: var(--white);
+  padding: 6px 12px; font-size: 12px; font-family: 'DM Mono', monospace;
+  cursor: pointer; border-radius: 8px; color: var(--ink-2);
+  transition: all 0.15s;
+}
+.pag button:hover:not(:disabled) { border-color: var(--pink); color: var(--pink); background: var(--pink-soft); }
+.pag button.active { background: var(--pink); color: #fff; border-color: var(--pink); }
+.pag button:disabled { opacity: 0.35; cursor: default; }
+.pag-dots { color: var(--ink-3); font-family: 'DM Mono', monospace; font-size: 12px; padding: 0 2px; }
 
-/* FOOTER */
-footer { background: #1B4FD8; color: rgba(255,255,255,0.8); text-align: center; padding: 16px; font-size: 12px; }
-footer a { color: #fff; }
+/* ── FOOTER ── */
+#ts { text-align: center; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--ink-3); padding: 12px 0 4px; }
+footer {
+  background: var(--ink); color: rgba(255,255,255,0.5);
+  text-align: center; padding: 20px;
+  font-size: 12px; margin-top: 32px;
+}
+footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
+footer a:hover { color: var(--pink); }
+.footer-inner { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
 
-/* SPINNER */
+/* ── ANIMATIONS ── */
 @keyframes spin { to { transform: rotate(360deg); } }
-.spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.spin-icon { display: inline-block; animation: spin 0.8s linear infinite; }
 
-/* MOBILE */
-@media (max-width: 600px) {
-  .hero h1 { font-size: 16px; }
-  #grid { grid-template-columns: 1fr; }
-  .logo-text { font-size: 15px; }
-  .wa-header span { display: none; }
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  header { padding: 0 16px; height: 56px; }
+  .logo-link img { height: 28px; }
+  .btn-wa-header span { display: none; }
+  .hero { padding: 28px 16px 24px; }
+  .hero h1 { font-size: 22px; }
+  .toolbar { padding: 10px 14px; top: 56px; }
+  main { padding: 14px; }
+  #grid { grid-template-columns: 1fr; gap: 10px; }
+  .card { padding: 14px; }
 }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-  <a class="logo" href="https://www.mepalab24.com">
-    <div class="logo-badge">ML24</div>
-    <div>
-      <div class="logo-text">MepaLab24</div>
-      <div class="logo-sub">Consulenza MEPA per imprese e PA</div>
-    </div>
+  <a class="logo-link" href="https://www.mepalab24.com">
+    <img src="Originale.png" alt="MepaLab24">
   </a>
-  <div class="header-right">
-    <a class="wa-header" href="https://wa.me/393517128322?text=Ciao%20MepaLab24%2C%20ho%20bisogno%20di%20consulenza%20MEPA" target="_blank">
-      💬 <span>Contattaci</span>
+  <div class="header-actions">
+    <button class="btn-refresh" id="load-btn" onclick="loadRdo()">
+      <span id="btn-icon">↻</span> Aggiorna
+    </button>
+    <a class="btn-wa-header" href="https://wa.me/393517128322?text=Ciao%20MepaLab24%2C%20vorrei%20informazioni%20sulla%20consulenza%20MEPA" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <span>Contattaci</span>
     </a>
   </div>
 </header>
 
+<!-- HERO -->
 <div class="hero">
-  <h1>📋 RdO Aperte su MEPA</h1>
-  <p>Trova le gare aperte oggi e richiedi subito supporto per partecipare</p>
+  <div class="hero-tag"><span></span> Live · acquistinretepa.it</div>
+  <h1>RdO Aperte su <em>MEPA</em></h1>
+  <p>Trova le gare attive oggi e richiedi supporto per partecipare con la nostra consulenza</p>
 </div>
 
-<div class="toolbar" id="toolbar-wrap">
-  <input type="text" id="search" placeholder="🔍  Cerca titolo, ente, categoria…" oninput="applyFilter()" style="display:none">
-  <select id="sort-sel" onchange="applyFilter()" style="display:none">
+<!-- TOOLBAR -->
+<div class="toolbar" id="toolbar" style="display:none">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Cerca titolo, ente, categoria…" oninput="applyFilter()">
+  </div>
+  <select id="sort-sel" onchange="applyFilter()">
     <option value="dataPubblicazione|desc">Più recenti</option>
     <option value="dataScadenzaBando|asc">Scadenza prima</option>
     <option value="valore|desc">Valore ↓</option>
     <option value="valore|asc">Valore ↑</option>
   </select>
-  <span id="cnt" style="display:none"></span>
-  <button id="load-btn" onclick="loadRdo()">↻ Carica RdO aperte</button>
+  <span id="cnt"></span>
 </div>
 
+<!-- MAIN -->
 <main>
   <div id="err"></div>
   <div id="empty">
-    <div class="ico">📋</div>
-    <h2>Trova la tua prossima gara MEPA</h2>
-    <p>Clicca <strong>Carica RdO aperte</strong> per vedere tutte le Richieste di Offerta attive oggi su acquistinretepa.it</p>
+    <div class="empty-spinner"></div>
+    <h2>Caricamento in corso…</h2>
+    <p>Recupero le RdO aperte da acquistinretepa.it</p>
   </div>
   <div id="grid"></div>
   <div class="pag" id="pag"></div>
@@ -143,8 +315,10 @@ footer a { color: #fff; }
 </main>
 
 <footer>
-  © 2026 <a href="https://www.mepalab24.com">MepaLab24</a> · Dati in tempo reale da acquistinretepa.it · 
-  <a href="https://wa.me/393517128322">WhatsApp: +39 351 712 8322</a>
+  <div class="footer-inner">
+    <div>© 2026 <a href="https://www.mepalab24.com">MepaLab24</a> · il tuo ufficio MEPA 24/7</div>
+    <div>Dati in tempo reale · <a href="https://wa.me/393517128322">+39 351 712 8322</a></div>
+  </div>
 </footer>
 
 <script>
@@ -152,6 +326,8 @@ const PROXY = 'https://mepa-rdo-proxy.onrender.com/rdo';
 const WA = '393517128322';
 const PER = 24;
 let all = [], filt = [], pg = 1;
+
+const WA_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
 function fmt(v) {
   if (!v) return '—';
@@ -167,106 +343,92 @@ function dl(iso) {
   return Math.ceil((new Date(iso) - new Date()) / 86400000);
 }
 function waLink(r) {
-  const testo = `Ciao MepaLab24! Sono interessato alla RdO n° ${r.numeroRdo} — "${(r.titoloBando||'').substring(0,60)}" su MEPA. Vorrei ricevere supporto per partecipare.`;
-  return `https://wa.me/${WA}?text=${encodeURIComponent(testo)}`;
+  const msg = `Ciao MepaLab24! Sono interessato alla RdO n° ${r.numeroRdo} — "${(r.titoloBando||'').substring(0,60)}" su MEPA. Vorrei ricevere supporto per partecipare.`;
+  return `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
 }
 
 async function loadRdo() {
   const btn = document.getElementById('load-btn');
+  const icon = document.getElementById('btn-icon');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spin">↻</span> Caricamento…';
+  icon.className = 'spin-icon';
   document.getElementById('err').style.display = 'none';
-
   try {
     const res = await fetch(PROXY);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     all = data.listaRdoAperte || [];
-    if (!all.length) throw new Error('Nessuna RdO trovata. Riprova tra poco.');
-
-    document.getElementById('search').style.display = 'block';
-    document.getElementById('sort-sel').style.display = 'block';
-    document.getElementById('cnt').style.display = 'block';
+    if (!all.length) throw new Error('Nessuna RdO trovata. Riprova tra qualche secondo.');
+    document.getElementById('toolbar').style.display = 'flex';
     document.getElementById('empty').style.display = 'none';
-    document.getElementById('ts').textContent = 'Dati aggiornati: ' + new Date().toLocaleString('it-IT') + ' · Fonte: acquistinretepa.it';
+    document.getElementById('ts').textContent = 'Aggiornato: ' + new Date().toLocaleString('it-IT') + ' · Fonte: acquistinretepa.it';
     applyFilter();
   } catch(e) {
     const eb = document.getElementById('err');
     eb.style.display = 'block';
-    eb.textContent = '❌ ' + e.message;
+    eb.textContent = '⚠ ' + e.message;
+    document.getElementById('empty').style.display = 'none';
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '↻ Ricarica';
+    icon.className = '';
+    icon.textContent = '↻';
   }
 }
 
 function applyFilter() {
   const q = document.getElementById('search').value.toLowerCase();
   const [sk, sd] = document.getElementById('sort-sel').value.split('|');
-
   filt = all.filter(r =>
     [r.numeroRdo, r.titoloBando, r.stazioneAppaltante, r.descrizioneEnte,
      r.categorieMerceologiche?.[0]?.descrizione].join(' ').toLowerCase().includes(q)
   );
-
   filt.sort((a, b) => {
     let av = a[sk] ?? '', bv = b[sk] ?? '';
-    if (sk === 'valore') {
-      av = parseFloat(String(av).replace(',','.')) || 0;
-      bv = parseFloat(String(bv).replace(',','.')) || 0;
-    }
+    if (sk === 'valore') { av = parseFloat(String(av).replace(',','.')) || 0; bv = parseFloat(String(bv).replace(',','.')) || 0; }
     return sd === 'asc' ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
   });
-
-  document.getElementById('cnt').innerHTML =
-    '<strong style="color:#1B4FD8">' + filt.length + '</strong> RdO trovate';
-  pg = 1;
-  render();
+  document.getElementById('cnt').innerHTML = '<strong>' + filt.length + '</strong> RdO';
+  pg = 1; render();
 }
 
 function render() {
   const slice = filt.slice((pg-1)*PER, pg*PER);
-  const grid = document.getElementById('grid');
-
-  grid.innerHTML = slice.map(r => {
+  document.getElementById('grid').innerHTML = slice.map((r, i) => {
     const d = dl(r.dataScadenzaBando);
     const urg = d !== null && d <= 5;
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
-    return `
-    <div class="card">
-      <div class="card-header">
-        <span class="rdo-num">RdO ${r.numeroRdo||'—'}</span>
-        ${cat ? `<span class="cat-badge" title="${cat}">${cat}</span>` : ''}
+    return `<div class="card" style="animation-delay:${(i%PER)*0.03}s">
+      <div class="card-top">
+        <span class="rdo-chip">RdO ${r.numeroRdo||'—'}</span>
+        ${cat ? `<span class="cat-chip" title="${cat}">${cat}</span>` : ''}
       </div>
-      <div class="card-title">${r.titoloBando||'—'}</div>
-      <div class="card-meta">
-        <div class="meta-item">
-          <span class="meta-label">Stazione Appaltante</span>
-          <span class="meta-value" title="${ente}">${ente}</span>
+      <div class="card-title" title="${(r.titoloBando||'').replace(/"/g,"'")}">${r.titoloBando||'—'}</div>
+      <div class="card-grid">
+        <div class="meta">
+          <span class="meta-l">Ente</span>
+          <span class="meta-v" title="${ente}">${ente}</span>
         </div>
-        <div class="meta-item">
-          <span class="meta-label">Valore stimato</span>
-          <span class="meta-value valore">${fmt(r.valore)}</span>
+        <div class="meta">
+          <span class="meta-l">Valore</span>
+          <span class="meta-v valore">${fmt(r.valore)}</span>
         </div>
-        <div class="meta-item">
-          <span class="meta-label">Pubblicata</span>
-          <span class="meta-value">${fmtD(r.dataPubblicazione)}</span>
+        <div class="meta">
+          <span class="meta-l">Pubblicata</span>
+          <span class="meta-v mono">${fmtD(r.dataPubblicazione)}</span>
         </div>
-        <div class="meta-item">
-          <span class="meta-label">Scadenza</span>
-          <span class="meta-value scad ${urg?'urg':''}">${urg?'⚠ ':''}${fmtD(r.dataScadenzaBando)}<br>
-          <span class="days-badge ${urg?'urg':''}">${d !== null ? d + ' giorni rimasti' : ''}</span></span>
+        <div class="meta">
+          <span class="meta-l">Scadenza</span>
+          <span class="meta-v mono ${urg?'urg':''}">${urg?'⚠ ':''}${fmtD(r.dataScadenzaBando)}</span>
+          ${d !== null ? `<span class="days ${urg?'urg':''}">${d} giorni rimasti</span>` : ''}
         </div>
       </div>
-      <div class="card-footer">
-        <a class="wa-btn" href="${waLink(r)}" target="_blank">
-          <span class="wa-icon">💬</span> Vuoi partecipare? Richiedi consulenza
-        </a>
-      </div>
+      <div class="divider"></div>
+      <a class="btn-wa" href="${waLink(r)}" target="_blank">
+        ${WA_ICON} Vuoi partecipare? Richiedi consulenza
+      </a>
     </div>`;
   }).join('');
-
   renderPag();
 }
 
@@ -275,12 +437,13 @@ function renderPag() {
   const el = document.getElementById('pag');
   if (tot <= 1) { el.innerHTML = ''; return; }
   let h = `<button onclick="goP(${pg-1})" ${pg===1?'disabled':''}>← Prec</button>`;
-  for (let i = 1; i <= tot; i++) {
-    if (i===1||i===tot||Math.abs(i-pg)<=2)
-      h += `<button onclick="goP(${i})" class="${i===pg?'active':''}">${i}</button>`;
-    else if (Math.abs(i-pg)===3)
-      h += `<span style="color:#9CA3AF">…</span>`;
-  }
+  const pages = Array.from({length: tot}, (_, i) => i+1);
+  pages.forEach((p, idx) => {
+    if (p===1||p===tot||Math.abs(p-pg)<=1) {
+      if (idx > 0 && pages[idx-1] !== p-1) h += `<span class="pag-dots">…</span>`;
+      h += `<button onclick="goP(${p})" class="${p===pg?'active':''}">${p}</button>`;
+    }
+  });
   h += `<button onclick="goP(${pg+1})" ${pg===tot?'disabled':''}>Succ →</button>`;
   el.innerHTML = h;
 }
@@ -291,6 +454,8 @@ function goP(p) {
   pg = p; render();
   window.scrollTo({top:0, behavior:'smooth'});
 }
+
+window.addEventListener('load', loadRdo);
 </script>
 </body>
 </html>
