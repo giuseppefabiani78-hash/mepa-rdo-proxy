@@ -1,204 +1,114 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RdO Aperte MEPA</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, sans-serif; background: #F4F9F6; color: #0D1F14; font-size: 14px; }
+const express = require('express');
+const cors = require('cors');
 
-header { background: #fff; border-bottom: 2px solid #00A651; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-.logo { display: flex; align-items: center; gap: 10px; }
-.badge { background: #00A651; color: #fff; font-family: monospace; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 3px; letter-spacing: 1px; }
-.title { font-size: 14px; font-weight: 600; }
-.sub { font-size: 10px; color: #6B7C72; font-family: monospace; }
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-#btn { background: #00A651; color: #fff; border: none; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 4px; }
-#btn:disabled { background: #C8DDD0; cursor: default; }
+const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 
-.toolbar { background: #fff; border-bottom: 1px solid #C8DDD0; padding: 10px 16px; display: none; align-items: center; gap: 10px; flex-wrap: wrap; }
-#search { flex: 1; min-width: 180px; border: 1px solid #C8DDD0; padding: 7px 12px; font-size: 13px; border-radius: 4px; outline: none; }
-#search:focus { border-color: #00A651; }
-#cnt { font-family: monospace; font-size: 12px; color: #6B7C72; white-space: nowrap; }
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Accept'] }));
+app.options('*', cors());
+app.use(express.json());
 
-main { padding: 16px; }
-#err { display: none; background: #FFF0F0; border-left: 3px solid #C00; padding: 12px 16px; color: #900; border-radius: 0 4px 4px 0; margin-bottom: 16px; font-size: 13px; }
-#empty { text-align: center; padding: 50px 20px; color: #6B7C72; }
-#empty .ico { font-size: 40px; margin-bottom: 12px; }
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'MEPA RdO Proxy', timestamp: new Date().toISOString() });
+});
 
-.table-wrap { overflow-x: auto; background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead tr { background: #0D1F14; color: #fff; }
-th { padding: 10px 12px; text-align: left; font-family: monospace; font-size: 11px; font-weight: 500; white-space: nowrap; }
-th:last-child { text-align: right; }
-tbody tr { border-bottom: 1px solid #E8F7EE; }
-tbody tr:hover { background: #F0FAF4; }
-td { padding: 9px 12px; vertical-align: top; }
-
-.num { font-family: monospace; font-weight: 700; font-size: 12px; color: #007A3D; white-space: nowrap; }
-.tit { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
-.cat { display: inline-block; margin-top: 3px; background: #E8F7EE; color: #007A3D; font-family: monospace; font-size: 10px; padding: 1px 6px; border-radius: 2px; }
-.ente { font-size: 12px; color: #6B7C72; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
-.date { font-family: monospace; font-size: 12px; color: #6B7C72; white-space: nowrap; }
-.urg { color: #C05000; font-weight: 700; }
-.val { font-family: monospace; font-weight: 700; text-align: right; white-space: nowrap; }
-
-.pag { display: flex; justify-content: center; gap: 5px; padding: 16px 0; flex-wrap: wrap; }
-.pag button { border: 1px solid #C8DDD0; background: #fff; padding: 5px 11px; font-family: monospace; font-size: 12px; cursor: pointer; border-radius: 3px; }
-.pag button:hover { background: #E8F7EE; }
-.pag button.active { background: #00A651; color: #fff; border-color: #00A651; }
-.pag button:disabled { opacity: 0.4; cursor: default; }
-
-#ts { text-align: center; font-family: monospace; font-size: 11px; color: #aaa; padding: 8px 0 4px; }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-.spin { display: inline-block; animation: spin 1s linear infinite; }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="logo">
-    <span class="badge">MEPA</span>
-    <div>
-      <div class="title">RdO Aperte</div>
-      <div class="sub">acquistinretepa.it · live</div>
-    </div>
-  </div>
-  <button id="btn" onclick="loadRdo()">↻ Carica RdO</button>
-</header>
-
-<div class="toolbar" id="toolbar">
-  <input type="text" id="search" placeholder="🔍 Cerca titolo, ente, categoria…" oninput="applyFilter()">
-  <span id="cnt"></span>
-</div>
-
-<main>
-  <div id="err"></div>
-  <div id="empty">
-    <div class="ico">📋</div>
-    <div>Premi <strong>Carica RdO</strong> per recuperare le RdO aperte in tempo reale</div>
-    <div style="font-size:11px;font-family:monospace;margin-top:8px;color:#aaa;">mepa-rdo-proxy.onrender.com</div>
-  </div>
-  <div id="table-area" style="display:none">
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>N° RdO</th>
-            <th>Oggetto</th>
-            <th>Ente</th>
-            <th>Scadenza</th>
-            <th>Valore €</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-    <div class="pag" id="pag"></div>
-    <div id="ts"></div>
-  </div>
-</main>
-
-<script>
-const PROXY = 'https://mepa-rdo-proxy.onrender.com/rdo';
-const PER = 20;
-let all = [], filt = [], pg = 1;
-
-function fmt(v) {
-  if (!v) return '—';
-  const n = parseFloat(String(v).replace(',', '.'));
-  return isNaN(n) ? '—' : n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-}
-function fmtD(iso) {
-  if (!iso) return '—';
-  try { return new Date(iso).toLocaleDateString('it-IT'); } catch(e) { return iso; }
-}
-function dl(iso) {
-  if (!iso) return null;
-  return Math.ceil((new Date(iso) - new Date()) / 86400000);
+async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc') {
+  const payload = {
+    isArchive: false,
+    strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
+    categoria: [],
+    idt: "",
+    orderBy: { campo, verso },
+    paginazione: { pagina, itemPagina },
+    tempo: { dataDa: null, dataA: null }
+  };
+  const response = await fetch(MEPA_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Origin': 'https://www.acquistinretepa.it',
+      'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=RDO',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
 
-async function loadRdo() {
-  const btn = document.getElementById('btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin">↻</span> Caricamento…';
-  document.getElementById('err').style.display = 'none';
+function findLista(obj, depth = 0) {
+  if (depth > 5 || !obj || typeof obj !== 'object') return null;
+  if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) return obj;
+  for (const key of Object.keys(obj)) {
+    const found = findLista(obj[key], depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
 
+function findTotale(obj, depth = 0) {
+  if (depth > 5 || !obj || typeof obj !== 'object') return null;
+  for (const key of ['totale', 'total', 'totalElements', 'count']) {
+    if (typeof obj[key] === 'number' && obj[key] > 0) return obj[key];
+  }
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === 'object') {
+      const found = findTotale(obj[key], depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+app.get('/debug', async (req, res) => {
   try {
-    const res = await fetch(PROXY);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    all = data.listaRdoAperte || data.lista || data.items || data.results || [];
-    if (!all.length) throw new Error('Lista vuota. Chiavi ricevute: ' + Object.keys(data).join(', '));
-    document.getElementById('toolbar').style.display = 'flex';
-    document.getElementById('empty').style.display = 'none';
-    document.getElementById('table-area').style.display = 'block';
-    document.getElementById('ts').textContent = 'Aggiornato: ' + new Date().toLocaleString('it-IT') + ' · Fonte: acquistinretepa.it';
-    applyFilter();
-  } catch(e) {
-    const eb = document.getElementById('err');
-    eb.style.display = 'block';
-    eb.textContent = '❌ ' + e.message;
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '↻ Ricarica';
+    const raw = await fetchPagina(1, 50);
+    res.json(raw);
+  } catch(err) {
+    res.status(500).json({ error: err.message });
   }
-}
+});
 
-function applyFilter() {
-  const q = document.getElementById('search').value.toLowerCase();
-  filt = all.filter(r =>
-    [r.numeroRdo, r.titoloBando, r.stazioneAppaltante, r.descrizioneEnte,
-     r.categorieMerceologiche?.[0]?.descrizione].join(' ').toLowerCase().includes(q)
-  );
-  document.getElementById('cnt').innerHTML = '<strong style="color:#007A3D">' + filt.length + '</strong> / ' + all.length + ' RdO';
-  pg = 1;
-  render();
-}
+app.get('/rdo', async (req, res) => {
+  try {
+    const campo = req.query.campo || 'dataPubblicazione';
+    const verso = req.query.verso || 'desc';
+    const ITEMS = 100;
 
-function render() {
-  const slice = filt.slice((pg-1)*PER, pg*PER);
-  document.getElementById('tbody').innerHTML = slice.map((r, i) => {
-    const d = dl(r.dataScadenzaBando);
-    const urg = d !== null && d <= 5;
-    const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
-    return `<tr style="${i%2?'background:#FAFCFB':''}">
-      <td><span class="num">${r.numeroRdo||'—'}</span></td>
-      <td>
-        <div class="tit" title="${(r.titoloBando||'').replace(/"/g,"'")}">${r.titoloBando||'—'}</div>
-        ${cat ? `<span class="cat">${cat}</span>` : ''}
-      </td>
-      <td><div class="ente">${r.descrizioneEnte||r.stazioneAppaltante||'—'}</div></td>
-      <td><span class="date ${urg?'urg':''}">${urg?'⚠ ':''}${fmtD(r.dataScadenzaBando)}${d!==null?`<br><small>${d}gg</small>`:''}</span></td>
-      <td><span class="val">${fmt(r.valore)}</span></td>
-    </tr>`;
-  }).join('');
-  renderPag();
-}
+    // Prima chiamata per sapere il totale
+    const first = await fetchPagina(1, ITEMS, campo, verso);
+    const lista1 = findLista(first) || [];
+    const totale = findTotale(first) || lista1.length;
 
-function renderPag() {
-  const tot = Math.ceil(filt.length / PER);
-  const el = document.getElementById('pag');
-  if (tot <= 1) { el.innerHTML = ''; return; }
-  let h = `<button onclick="goP(${pg-1})" ${pg===1?'disabled':''}>← Prec</button>`;
-  for (let i = 1; i <= tot; i++) {
-    if (i===1||i===tot||Math.abs(i-pg)<=1)
-      h += `<button onclick="goP(${i})" class="${i===pg?'active':''}">${i}</button>`;
-    else if (Math.abs(i-pg)===2)
-      h += `<span style="color:#aaa;font-family:monospace">…</span>`;
+    console.log(`Totale RdO: ${totale}, prima pagina: ${lista1.length}`);
+
+    let tuttiRdo = [...lista1];
+
+    if (totale > ITEMS) {
+      const pagine = Math.ceil(totale / ITEMS);
+      const promises = [];
+      for (let p = 2; p <= pagine; p++) {
+        promises.push(fetchPagina(p, ITEMS, campo, verso));
+      }
+      const results = await Promise.all(promises);
+      for (const r of results) {
+        const lista = findLista(r) || [];
+        tuttiRdo = tuttiRdo.concat(lista);
+      }
+    }
+
+    console.log(`Totale RdO caricate: ${tuttiRdo.length}`);
+    res.json({ listaRdoAperte: tuttiRdo, totale: tuttiRdo.length });
+
+  } catch (err) {
+    console.error('Proxy error:', err.message);
+    res.status(500).json({ error: err.message });
   }
-  h += `<button onclick="goP(${pg+1})" ${pg===tot?'disabled':''}>Succ →</button>`;
-  el.innerHTML = h;
-}
+});
 
-function goP(p) {
-  const tot = Math.ceil(filt.length/PER);
-  if (p<1||p>tot) return;
-  pg = p; render();
-  window.scrollTo(0,0);
-}
-</script>
-</body>
-</html>
+app.listen(PORT, () => {
+  console.log(`MEPA Proxy running on port ${PORT}`);
+});
