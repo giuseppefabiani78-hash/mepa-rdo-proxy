@@ -6,16 +6,6 @@ const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 
-const DEFAULT_PAYLOAD = {
-  isArchive: false,
-  strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
-  categoria: [],
-  idt: "",
-  orderBy: { campo: "dataPubblicazione", verso: "desc" },
-  paginazione: { pagina: 1, itemPagina: 50 },
-  tempo: { dataDa: null, dataA: null }
-};
-
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Accept'] }));
 app.options('*', cors());
 app.use(express.json());
@@ -24,7 +14,16 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'MEPA RdO Proxy', timestamp: new Date().toISOString() });
 });
 
-async function fetchMepa(payload) {
+async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc') {
+  const payload = {
+    isArchive: false,
+    strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
+    categoria: [],
+    idt: "",
+    orderBy: { campo, verso },
+    paginazione: { pagina, itemPagina },
+    tempo: { dataDa: null, dataA: null }
+  };
   const response = await fetch(MEPA_URL, {
     method: 'POST',
     headers: {
@@ -36,14 +35,37 @@ async function fetchMepa(payload) {
     },
     body: JSON.stringify(payload)
   });
-  if (!response.ok) throw new Error(`MEPA upstream error: ${response.status}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
-// Debug: restituisce la risposta grezza completa
+function findLista(obj, depth = 0) {
+  if (depth > 5 || !obj || typeof obj !== 'object') return null;
+  if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) return obj;
+  for (const key of Object.keys(obj)) {
+    const found = findLista(obj[key], depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function findTotale(obj, depth = 0) {
+  if (depth > 5 || !obj || typeof obj !== 'object') return null;
+  for (const key of ['totale', 'total', 'totalElements', 'count']) {
+    if (typeof obj[key] === 'number' && obj[key] > 0) return obj[key];
+  }
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === 'object') {
+      const found = findTotale(obj[key], depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 app.get('/debug', async (req, res) => {
   try {
-    const raw = await fetchMepa(DEFAULT_PAYLOAD);
+    const raw = await fetchPagina(1, 50);
     res.json(raw);
   } catch(err) {
     res.status(500).json({ error: err.message });
@@ -52,29 +74,35 @@ app.get('/debug', async (req, res) => {
 
 app.get('/rdo', async (req, res) => {
   try {
-    const pagina = parseInt(req.query.pagina) || 1;
-    const itemPagina = parseInt(req.query.itemPagina) || 50;
-    const verso = req.query.verso || 'desc';
     const campo = req.query.campo || 'dataPubblicazione';
+    const verso = req.query.verso || 'desc';
+    const ITEMS = 100;
 
-    const payload = { ...DEFAULT_PAYLOAD, orderBy: { campo, verso }, paginazione: { pagina, itemPagina } };
-    const raw = await fetchMepa(payload);
+    // Prima chiamata per sapere il totale
+    const first = await fetchPagina(1, ITEMS, campo, verso);
+    const lista1 = findLista(first) || [];
+    const totale = findTotale(first) || lista1.length;
 
-    // Esplora ricorsivamente la struttura per trovare array di oggetti con numeroRdo
-    function findLista(obj, depth = 0) {
-      if (depth > 5 || !obj || typeof obj !== 'object') return null;
-      if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) return obj;
-      for (const key of Object.keys(obj)) {
-        const found = findLista(obj[key], depth + 1);
-        if (found) return found;
+    console.log(`Totale RdO: ${totale}, prima pagina: ${lista1.length}`);
+
+    let tuttiRdo = [...lista1];
+
+    if (totale > ITEMS) {
+      const pagine = Math.ceil(totale / ITEMS);
+      const promises = [];
+      for (let p = 2; p <= pagine; p++) {
+        promises.push(fetchPagina(p, ITEMS, campo, verso));
       }
-      return null;
+      const results = await Promise.all(promises);
+      for (const r of results) {
+        const lista = findLista(r) || [];
+        tuttiRdo = tuttiRdo.concat(lista);
+      }
     }
 
-    const lista = findLista(raw) || [];
-    const totale = raw.totale || raw.total || raw.result?.totale || lista.length;
+    console.log(`Totale RdO caricate: ${tuttiRdo.length}`);
+    res.json({ listaRdoAperte: tuttiRdo, totale: tuttiRdo.length });
 
-    res.json({ listaRdoAperte: lista, totale, _raw_keys: Object.keys(raw) });
   } catch (err) {
     console.error('Proxy error:', err.message);
     res.status(500).json({ error: err.message });
