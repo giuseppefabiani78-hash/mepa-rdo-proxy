@@ -150,8 +150,9 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 /* ── GRID ── */
 #grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 14px;
+  width: 100%;
 }
 
 /* ── CARD ── */
@@ -266,7 +267,7 @@ footer a:hover { color: var(--pink); }
 <!-- HEADER -->
 <header>
   <a class="logo-link" href="https://www.mepalab24.com">
-    <img src="Originale.png" alt="MepaLab24">
+    <img src="logo.png" alt="MepaLab24">
   </a>
   <div class="header-actions">
     <button class="btn-refresh" id="load-btn" onclick="loadRdo()">
