@@ -297,6 +297,44 @@ function render() {
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
 
+    let regione = '';
+
+const enteUpper = ente.toUpperCase();
+
+if (
+  enteUpper.includes('NAPOLI') ||
+  enteUpper.includes('SALERNO') ||
+  enteUpper.includes('CASERTA') ||
+  enteUpper.includes('AVELLINO') ||
+  enteUpper.includes('BENEVENTO')
+) {
+  regione = 'Campania';
+}
+
+else if (
+  enteUpper.includes('ROMA') ||
+  enteUpper.includes('LATINA') ||
+  enteUpper.includes('FROSINONE')
+) {
+  regione = 'Lazio';
+}
+
+else if (
+  enteUpper.includes('MILANO') ||
+  enteUpper.includes('BERGAMO') ||
+  enteUpper.includes('BRESCIA')
+) {
+  regione = 'Lombardia';
+}
+
+else if (
+  enteUpper.includes('PALERMO') ||
+  enteUpper.includes('CATANIA') ||
+  enteUpper.includes('SICILIA')
+) {
+  regione = 'Sicilia';
+}
+    
     return `<div class="card ${urg ? 'card-urgent' : ''}" style="animation-delay:${(i%PER)*0.025}s">
       <div class="card-top">
         <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
