@@ -6,12 +6,21 @@ const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Accept'] }));
+app.use(cors({ 
+  origin: '*', 
+  methods: ['GET', 'POST', 'OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Accept'] 
+}));
+
 app.options('*', cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'MEPA RdO Proxy', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    service: 'MEPA RdO Proxy', 
+    timestamp: new Date().toISOString() 
+  });
 });
 
 async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc') {
@@ -24,6 +33,7 @@ async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione'
     paginazione: { pagina, itemPagina },
     tempo: { dataDa: null, dataA: null }
   };
+
   const response = await fetch(MEPA_URL, {
     method: 'POST',
     headers: {
@@ -35,39 +45,64 @@ async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione'
     },
     body: JSON.stringify(payload)
   });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
   return response.json();
 }
 
 function findLista(obj, depth = 0) {
   if (depth > 5 || !obj || typeof obj !== 'object') return null;
-  if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) return obj;
+
+  if (Array.isArray(obj) && obj.length > 0 && obj[0]?.numeroRdo) {
+    return obj;
+  }
+
   for (const key of Object.keys(obj)) {
     const found = findLista(obj[key], depth + 1);
     if (found) return found;
   }
+
   return null;
 }
 
 function findTotale(obj, depth = 0) {
   if (depth > 5 || !obj || typeof obj !== 'object') return null;
+
   for (const key of ['totale', 'total', 'totalElements', 'count']) {
-    if (typeof obj[key] === 'number' && obj[key] > 0) return obj[key];
+    if (typeof obj[key] === 'number' && obj[key] > 0) {
+      return obj[key];
+    }
   }
+
   for (const key of Object.keys(obj)) {
     if (typeof obj[key] === 'object') {
       const found = findTotale(obj[key], depth + 1);
       if (found) return found;
     }
   }
+
   return null;
+}
+
+function normalizzaMepa(r) {
+  return {
+    ...r,
+
+    // Campi aggiunti per preparare la piattaforma multi-fonte
+    source: "MEPA",
+    sourceLabel: "MePA",
+    sourceType: "national"
+  };
 }
 
 app.get('/debug', async (req, res) => {
   try {
     const raw = await fetchPagina(1, 50);
     res.json(raw);
-  } catch(err) {
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
@@ -78,7 +113,6 @@ app.get('/rdo', async (req, res) => {
     const verso = req.query.verso || 'desc';
     const ITEMS = 100;
 
-    // Prima chiamata per sapere il totale
     const first = await fetchPagina(1, ITEMS, campo, verso);
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
@@ -90,18 +124,27 @@ app.get('/rdo', async (req, res) => {
     if (totale > ITEMS) {
       const pagine = Math.ceil(totale / ITEMS);
       const promises = [];
+
       for (let p = 2; p <= pagine; p++) {
         promises.push(fetchPagina(p, ITEMS, campo, verso));
       }
+
       const results = await Promise.all(promises);
+
       for (const r of results) {
         const lista = findLista(r) || [];
         tuttiRdo = tuttiRdo.concat(lista);
       }
     }
 
-    console.log(`Totale RdO caricate: ${tuttiRdo.length}`);
-    res.json({ listaRdoAperte: tuttiRdo, totale: tuttiRdo.length });
+    const rdoNormalizzate = tuttiRdo.map(normalizzaMepa);
+
+    console.log(`Totale RdO caricate: ${rdoNormalizzate.length}`);
+
+    res.json({
+      listaRdoAperte: rdoNormalizzate,
+      totale: rdoNormalizzate.length
+    });
 
   } catch (err) {
     console.error('Proxy error:', err.message);
