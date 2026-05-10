@@ -113,7 +113,7 @@ app.get('/rdo', async (req, res) => {
 
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
-    const ITEMS = 100;
+    const ITEMS = 50;
 
     const first = await fetchPagina(1, ITEMS, campo, verso);
 
