@@ -287,7 +287,7 @@ function render() {
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
 
-    return `<div class="card" style="animation-delay:${(i%PER)*0.025}s">
+    return `<div class="card ${urg ? 'card-urgent' : ''}" style="animation-delay:${(i%PER)*0.025}s">
       <div class="card-top">
         <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
           <span class="source-badge ${sourceClass(r)}">${r.sourceLabel || 'MePA'}</span>
