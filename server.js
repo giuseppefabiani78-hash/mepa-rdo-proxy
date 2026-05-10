@@ -5,35 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
-const COMUNI_REGIONI = {
-  "ROMA": "Lazio",
-  "MILANO": "Lombardia",
-  "NAPOLI": "Campania",
-  "MERCATO SARACENO": "Emilia-Romagna",
-  "ISOLA DI CAPO RIZZUTO": "Calabria",
-  "SALERNO": "Campania",
-  "CATANZARO": "Calabria",
-  "COSENZA": "Calabria"
-};
-
-function stimaRegione(rdo) {
-
-  const testo = [
-    rdo.descrizioneEnte || '',
-    rdo.stazioneAppaltante || '',
-    rdo.titoloBando || '',
-    rdo.descrizioneBando || '',
-    rdo.descrizione || ''
-  ].join(' ').toUpperCase();
-
-  for (const comune in COMUNI_REGIONI) {
-    if (testo.includes(comune)) {
-      return COMUNI_REGIONI[comune];
-    }
-  }
-
-  return '';
-}
+const { stimaRegione } = require('./geo');
 
 app.use(cors({ 
   origin: '*', 
