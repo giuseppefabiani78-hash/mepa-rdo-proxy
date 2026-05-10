@@ -1,30 +1,29 @@
 const express = require('express');
 const cors = require('cors');
+const { stimaRegione } = require('./geo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
-const { stimaRegione } = require('./geo');
 
 let cacheRdo = {};
-
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minuti
 
-app.use(cors({ 
-  origin: '*', 
-  methods: ['GET', 'POST', 'OPTIONS'], 
-  allowedHeaders: ['Content-Type', 'Accept'] 
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept']
 }));
 
 app.options('*', cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    service: 'MEPA RdO Proxy', 
-    timestamp: new Date().toISOString() 
+  res.json({
+    status: 'ok',
+    service: 'MEPA RdO Proxy',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -95,8 +94,6 @@ function findTotale(obj, depth = 0) {
 function normalizzaMepa(r) {
   return {
     ...r,
-
-    // Campi aggiunti per preparare la piattaforma multi-fonte
     source: "MEPA",
     sourceLabel: "MePA",
     sourceType: "national"
@@ -114,59 +111,70 @@ app.get('/debug', async (req, res) => {
 
 app.get('/rdo', async (req, res) => {
   try {
-    
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
-    const ITEMS = 24;
-    const pagina = parseInt(req.query.pagina || '1', 10);
-    const cacheKey = `${pagina}-${campo}-${verso}`;
-const cached = cacheRdo[cacheKey];
+    const ITEMS = 100;
 
-if (cached && (Date.now() - cached.time < CACHE_DURATION)) {
-  console.log('Cache HIT pagina', pagina);
+    const cacheKey = `${campo}-${verso}`;
+    const cached = cacheRdo[cacheKey];
 
-  return res.json({
-    ...cached.data,
-    cache: "HIT"
-  });
-}
+    if (cached && (Date.now() - cached.time < CACHE_DURATION)) {
+      console.log('Cache HIT');
 
-console.log('Cache MISS pagina', pagina);
+      return res.json({
+        ...cached.data,
+        cache: "HIT"
+      });
+    }
 
-        const first = await fetchPagina(pagina, ITEMS, campo, verso);
+    console.log('Cache MISS');
 
+    const first = await fetchPagina(1, ITEMS, campo, verso);
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
 
     console.log(`Totale RdO disponibili: ${totale}`);
 
     let tuttiRdo = [...lista1];
-   const rdoNormalizzate = tuttiRdo.map(r => {
-  const rdo = normalizzaMepa(r);
 
-  rdo.regioneStimata = stimaRegione(rdo);
+    if (totale > ITEMS) {
+      const pagine = Math.ceil(totale / ITEMS);
+      const promises = [];
 
-  return rdo;
-});
+      for (let p = 2; p <= pagine; p++) {
+        promises.push(fetchPagina(p, ITEMS, campo, verso));
+      }
+
+      const results = await Promise.all(promises);
+
+      for (const r of results) {
+        const lista = findLista(r) || [];
+        tuttiRdo = tuttiRdo.concat(lista);
+      }
+    }
+
+    const rdoNormalizzate = tuttiRdo.map(r => {
+      const rdo = normalizzaMepa(r);
+      rdo.regioneStimata = stimaRegione(rdo);
+      return rdo;
+    });
+
+    const responseData = {
+      listaRdoAperte: rdoNormalizzate,
+      totaleDisponibile: totale,
+      totaleCaricato: rdoNormalizzate.length,
+      cache: "MISS",
+      aggiornato: new Date().toISOString()
+    };
+
+    cacheRdo[cacheKey] = {
+      time: Date.now(),
+      data: responseData
+    };
 
     console.log(`Totale RdO caricate: ${rdoNormalizzate.length}`);
 
-  const responseData = {
-  listaRdoAperte: rdoNormalizzate,
-  totaleDisponibile: totale,
-  totaleCaricato: rdoNormalizzate.length,
-  paginaCorrente: pagina,
-  totalePagine: Math.ceil(totale / ITEMS),
-  cache: "MISS",
-  aggiornato: new Date().toISOString()
-};
-
-cacheRdo[cacheKey] = {
-  time: Date.now(),
-  data: responseData
-};
-
-res.json(responseData);
+    res.json(responseData);
 
   } catch (err) {
     console.error('Proxy error:', err.message);
