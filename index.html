@@ -677,37 +677,25 @@ function sourceClass(r) {
 }
 
 function stimaRegione(r) {
+
   const testo = [
     r.descrizioneEnte || '',
     r.stazioneAppaltante || '',
     r.titoloBando || '',
     r.descrizioneBando || '',
-    r.descrizione || '',
-    r.categorieMerceologiche?.[0]?.descrizione || ''
+    r.descrizione || ''
   ].join(' ').toUpperCase();
 
-  const regioni = {
-    "Piemonte": ["PIEMONTE", "TORINO", "CUNEO", "ASTI", "ALESSANDRIA", "NOVARA", "VERCELLI", "BIELLA", "VERBANO", "CUSIO", "OSSOLA"],
-    "Valle d'Aosta": ["VALLE D'AOSTA", "AOSTA"],
-    "Lombardia": ["LOMBARDIA", "MILANO", "MONZA", "BRIANZA", "BERGAMO", "BRESCIA", "COMO", "CREMONA", "LECCO", "LODI", "MANTOVA", "PAVIA", "SONDRIO", "VARESE"],
-    "Trentino-Alto Adige": ["TRENTINO", "BOLZANO", "TRENTO", "ALTO ADIGE"],
-    "Veneto": ["VENETO", "VENEZIA", "VERONA", "VICENZA", "PADOVA", "TREVISO", "ROVIGO", "BELLUNO"],
-    "Friuli-Venezia Giulia": ["FRIULI", "TRIESTE", "UDINE", "PORDENONE", "GORIZIA"],
-    "Liguria": ["LIGURIA", "GENOVA", "SAVONA", "IMPERIA", "LA SPEZIA"],
-    "Emilia-Romagna": ["EMILIA", "ROMAGNA", "BOLOGNA", "MODENA", "PARMA", "PIACENZA", "REGGIO EMILIA", "FERRARA", "RAVENNA", "RIMINI", "FORLI", "FORLÌ", "CESENA", "MERCATO SARACENO"],
-    "Toscana": ["TOSCANA", "FIRENZE", "PRATO", "PISTOIA", "LUCCA", "PISA", "LIVORNO", "AREZZO", "SIENA", "GROSSETO", "MASSA", "CARRARA"],
-    "Umbria": ["UMBRIA", "PERUGIA", "TERNI"],
-    "Marche": ["MARCHE", "ANCONA", "PESARO", "URBINO", "MACERATA", "FERMO", "ASCOLI PICENO"],
-    "Lazio": ["LAZIO", "ROMA", "LATINA", "FROSINONE", "RIETI", "VITERBO"],
-    "Abruzzo": ["ABRUZZO", "AQUILA", "L'AQUILA", "PESCARA", "CHIETI", "TERAMO"],
-    "Molise": ["MOLISE", "CAMPOBASSO", "ISERNIA"],
-    "Campania": ["CAMPANIA", "NAPOLI", "SALERNO", "CASERTA", "AVELLINO", "BENEVENTO"],
-    "Puglia": ["PUGLIA", "BARI", "LECCE", "BRINDISI", "TARANTO", "FOGGIA", "BARLETTA", "ANDRIA", "TRANI", "BAT"],
-    "Basilicata": ["BASILICATA", "POTENZA", "MATERA"],
-    "Calabria": ["CALABRIA", "CATANZARO", "COSENZA", "CROTONE", "REGGIO CALABRIA", "VIBO VALENTIA", "ISOLA DI CAPO RIZZUTO"],
-    "Sicilia": ["SICILIA", "PALERMO", "CATANIA", "MESSINA", "TRAPANI", "AGRIGENTO", "CALTANISSETTA", "ENNA", "RAGUSA", "SIRACUSA"],
-    "Sardegna": ["SARDEGNA", "CAGLIARI", "SASSARI", "NUORO", "ORISTANO", "SUD SARDEGNA"]
-  };
+  for (const comune in COMUNI_REGIONI) {
+
+    if (testo.includes(comune)) {
+      return COMUNI_REGIONI[comune];
+    }
+
+  }
+
+  return '';
+};
 
   for (const [regione, parole] of Object.entries(regioni)) {
     if (parole.some(p => testo.includes(p))) {
