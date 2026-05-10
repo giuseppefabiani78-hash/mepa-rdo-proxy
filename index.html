@@ -10,6 +10,7 @@
   --ink: #0F0F0F; --ink-2: #3D3D3D; --ink-3: #7A7A7A;
   --border: #E8E8E8; --bg: #F5F5F3; --white: #fff;
   --pink: #FF1493; --pink-bg: rgba(255,20,147,0.1);
+  --mepa-green: #2b8a67; --mepa-green-light: #3aa17c;
   --wa: #128C7E; --wa-hover: #0a6b60;
   --r: 12px;
 }
@@ -29,11 +30,11 @@ header { background: #fff; border-bottom: 1px solid var(--border); height: 64px;
 
 /* HERO */
 .hero { background: #0F0F0F; padding: 36px 24px 32px; text-align: center; position: relative; overflow: hidden; }
-.hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(255,20,147,0.2), transparent 70%); pointer-events: none; }
+.hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(43,138,103,0.28), transparent 70%); pointer-events: none; }
 .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 14px; position: relative; z-index: 1; }
-.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); animation: pulse 2s infinite; }
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mepa-green-light); animation: pulse 2s infinite; }
 .hero h1 { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.5px; position: relative; z-index: 1; margin-bottom: 8px; }
-.hero h1 em { color: var(--pink); font-style: normal; }
+.hero h1 em { color: var(--mepa-green-light); font-style: normal; }
 .hero p { font-size: 14px; color: rgba(255,255,255,0.5); position: relative; z-index: 1; }
 
 /* TOOLBAR */
@@ -41,10 +42,10 @@ header { background: #fff; border-bottom: 1px solid var(--border); height: 64px;
 .search-wrap { flex: 1; min-width: 180px; position: relative; }
 .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; flex-shrink: 0; }
 #search { width: 100%; border: 1px solid var(--border); padding: 9px 12px 9px 34px; font-size: 13px; font-family: inherit; border-radius: 8px; outline: none; background: var(--bg); }
-#search:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-bg); background: #fff; }
+#search:focus { border-color: var(--mepa-green); box-shadow: 0 0 0 3px rgba(43,138,103,0.12); background: #fff; }
 #sort-sel { border: 1px solid var(--border); padding: 9px 10px; font-size: 13px; font-family: inherit; border-radius: 8px; outline: none; background: var(--bg); cursor: pointer; }
 #cnt { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-3); white-space: nowrap; margin-left: auto; }
-#cnt strong { color: var(--pink); }
+#cnt strong { color: var(--mepa-green); }
 
 /* MAIN */
 main { padding: 20px; max-width: 1440px; margin: 0 auto; }
@@ -52,7 +53,7 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 /* STATES */
 #err { display: none; background: #FFF1F1; border: 1px solid #FFD5D5; padding: 14px 18px; color: #C0392B; border-radius: var(--r); margin-bottom: 16px; font-size: 13px; }
 #empty { text-align: center; padding: 80px 20px; color: var(--ink-3); }
-.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--mepa-green); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px; }
 #empty h2 { font-size: 17px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
 
 /* GRID */
@@ -63,7 +64,31 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
 
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; min-width: 0; }
-.rdo-chip { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--pink); background: var(--pink-bg); padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+
+/* SOURCE BADGES */
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.source-mepa {
+  background: linear-gradient(135deg, #2b8a67 0%, #3aa17c 100%);
+  box-shadow: 0 2px 6px rgba(43,138,103,0.25);
+}
+.source-ted { background: #7c3aed; }
+.source-sintel { background: #16a34a; }
+.source-sater { background: #ea580c; }
+.source-start { background: #0891b2; }
+
+.rdo-chip { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--mepa-green); background: rgba(43,138,103,0.10); padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
 .cat-chip { font-size: 10px; color: var(--ink-3); background: var(--bg); padding: 3px 7px; border-radius: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; text-align: right; }
 
 .card-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -89,15 +114,15 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 /* PAGINATION */
 .pag { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 24px 0 8px; flex-wrap: wrap; }
 .pag button { border: 1px solid var(--border); background: #fff; padding: 6px 12px; font-size: 12px; font-family: 'DM Mono', monospace; cursor: pointer; border-radius: 8px; color: var(--ink-2); transition: all 0.15s; }
-.pag button:hover:not(:disabled) { border-color: var(--pink); color: var(--pink); }
-.pag button.active { background: var(--pink); color: #fff; border-color: var(--pink); }
+.pag button:hover:not(:disabled) { border-color: var(--mepa-green); color: var(--mepa-green); }
+.pag button.active { background: var(--mepa-green); color: #fff; border-color: var(--mepa-green); }
 .pag button:disabled { opacity: 0.35; cursor: default; }
 
 #ts { text-align: center; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--ink-3); padding: 12px 0 4px; }
 
 footer { background: var(--ink); color: rgba(255,255,255,0.45); text-align: center; padding: 20px; font-size: 12px; margin-top: 32px; }
 footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
-footer a:hover { color: var(--pink); }
+footer a:hover { color: var(--mepa-green-light); }
 
 /* ANIMATIONS */
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -231,7 +256,7 @@ function applyFilter() {
   const [sk, sd] = document.getElementById('sort-sel').value.split('|');
   filt = all.filter(r =>
     [r.numeroRdo, r.titoloBando, r.stazioneAppaltante, r.descrizioneEnte,
-     r.categorieMerceologiche?.[0]?.descrizione].join(' ').toLowerCase().includes(q)
+     r.categorieMerceologiche?.[0]?.descrizione, r.sourceLabel].join(' ').toLowerCase().includes(q)
   );
   filt.sort((a, b) => {
     let av = a[sk] ?? '', bv = b[sk] ?? '';
@@ -242,6 +267,11 @@ function applyFilter() {
   pg = 1; render();
 }
 
+function sourceClass(r) {
+  const s = (r.source || 'MEPA').toLowerCase();
+  return 'source-' + s;
+}
+
 function render() {
   const slice = filt.slice((pg-1)*PER, pg*PER);
   document.getElementById('grid').innerHTML = slice.map((r, i) => {
@@ -249,12 +279,18 @@ function render() {
     const urg = d !== null && d <= 5;
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
+
     return `<div class="card" style="animation-delay:${(i%PER)*0.025}s">
       <div class="card-top">
-        <span class="rdo-chip">RdO ${r.numeroRdo||'—'}</span>
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
+          <span class="source-badge ${sourceClass(r)}">${r.sourceLabel || 'MePA'}</span>
+          <span class="rdo-chip">RdO ${r.numeroRdo||'—'}</span>
+        </div>
         ${cat ? `<span class="cat-chip" title="${cat}">${cat}</span>` : ''}
       </div>
+
       <div class="card-title">${r.titoloBando||'—'}</div>
+
       <div class="meta-row">
         <div class="meta-item" style="overflow:hidden">
           <span class="meta-l">Ente</span>
@@ -265,6 +301,7 @@ function render() {
           <span class="meta-v bold">${fmt(r.valore)}</span>
         </div>
       </div>
+
       <div class="meta-row">
         <div class="meta-item">
           <span class="meta-l">Pubblicata</span>
@@ -276,6 +313,7 @@ function render() {
           ${d !== null ? `<span class="days ${urg?'urg':''}">${d}gg rimasti</span>` : ''}
         </div>
       </div>
+
       <div class="divider"></div>
       <a class="btn-wa" href="${waLink(r)}" target="_blank">${WA_SVG} Vuoi partecipare? Richiedi consulenza</a>
     </div>`;
