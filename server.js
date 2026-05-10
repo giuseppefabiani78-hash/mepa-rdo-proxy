@@ -6,8 +6,9 @@ const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 const { stimaRegione } = require('./geo');
-let cacheRdo = null;
-let cacheTime = 0;
+
+let cacheRdo = {};
+
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minuti
 
 app.use(cors({ 
