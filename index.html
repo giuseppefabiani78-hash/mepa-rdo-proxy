@@ -857,12 +857,19 @@ function renderPag() {
 }
 
 function goP(p) {
-  const tot = Math.ceil(filt.length / PER);
-
-  if (p < 1 || p > tot) return;
+  if (p < 1) return;
 
   pg = p;
-  render();
+
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('empty').style.display = 'block';
+  document.getElementById('empty').innerHTML = `
+    <div class="spinner"></div>
+    <h2>Caricamento pagina ${p}…</h2>
+    <p>Recupero le RdO aperte da acquistinretepa.it</p>
+  `;
+
+  loadRdo();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
