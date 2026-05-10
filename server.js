@@ -125,7 +125,7 @@ console.log('Cache MISS');
     
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
-    const ITEMS = 50;
+    const ITEMS = 100;
     const pagina = parseInt(req.query.pagina || '1', 10);
 
         const first = await fetchPagina(pagina, ITEMS, campo, verso);
