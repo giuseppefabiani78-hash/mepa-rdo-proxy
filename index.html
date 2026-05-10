@@ -635,6 +635,7 @@ footer a:hover { color: var(--mepa-green-light); }
   <a href="https://wa.me/393517128322">+39 351 712 8322</a>
 </footer>
 
+<script src="comuni-regioni.js"></script>  
 <script>
 const PROXY = 'https://mepa-rdo-proxy.onrender.com/rdo';
 const WA = '393517128322';
@@ -696,15 +697,6 @@ function stimaRegione(r) {
 
   return '';
 };
-
-  for (const [regione, parole] of Object.entries(regioni)) {
-    if (parole.some(p => testo.includes(p))) {
-      return regione;
-    }
-  }
-
-  return "";
-}
 
 async function loadRdo() {
   const btn = document.getElementById('load-btn');
@@ -876,6 +868,6 @@ function goP(p) {
 window.addEventListener('load', loadRdo);
 </script>
 
-<script src="comuni-regioni.js"></script>
 </body>
+
 </html>
