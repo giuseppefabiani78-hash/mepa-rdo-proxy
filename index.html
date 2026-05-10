@@ -190,10 +190,10 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
   -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-width: 0; }
 .meta { display: flex; flex-direction: column; gap: 2px; }
 .meta-l { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
-.meta-v { font-size: 13px; color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta-v { font-size: 13px; color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100%; }
 .meta-v.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
 .meta-v.valore { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: var(--ink); }
 .meta-v.urg { color: #D4380D; font-weight: 600; }
