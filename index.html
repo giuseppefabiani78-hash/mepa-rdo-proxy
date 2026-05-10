@@ -739,7 +739,7 @@ function applyFilter() {
   const [sk, sd] = document.getElementById('sort-sel').value.split('|');
 
   filt = all.filter(r => {
-    const regione = stimaRegione(r);
+    const regione = r.regioneStimata || '';
 
     const testo = [
       r.numeroRdo,
