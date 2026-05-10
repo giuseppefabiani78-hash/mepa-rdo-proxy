@@ -1,19 +1,12 @@
-const COMUNI_REGIONI = {
-  "ROMA": "Lazio",
-  "MILANO": "Lombardia",
-  "NAPOLI": "Campania",
-  "TORINO": "Piemonte",
-  "PALERMO": "Sicilia",
-  "BARI": "Puglia",
-  "CAGLIARI": "Sardegna",
-  "BOLOGNA": "Emilia-Romagna",
-  "FIRENZE": "Toscana",
-  "GENOVA": "Liguria",
-  "VENEZIA": "Veneto",
-  "ISOLA DI CAPO RIZZUTO": "Calabria",
-  "MERCATO SARACENO": "Emilia-Romagna"
-};
+const comuni = require('./comuni.json');
 
+const COMUNI_REGIONI = {};
+
+for (const c of comuni) {
+  if (c.nome && c.regione?.nome) {
+    COMUNI_REGIONI[c.nome.toUpperCase()] = c.regione.nome;
+  }
+}
 const ALIAS_REGIONI = {
   "REGIONE SICILIA": "Sicilia",
   "SICILIA": "Sicilia",
