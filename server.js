@@ -108,36 +108,6 @@ app.get('/debug', async (req, res) => {
   }
 });
 
-app.get('/rdo', async (req, res) => {
-  try {
-    const campo = req.query.campo || 'dataPubblicazione';
-    const verso = req.query.verso || 'desc';
-    const ITEMS = 100;
-
-    const first = await fetchPagina(1, ITEMS, campo, verso);
-    const lista1 = findLista(first) || [];
-    const totale = findTotale(first) || lista1.length;
-
-    console.log(`Totale RdO: ${totale}, prima pagina: ${lista1.length}`);
-
-    let tuttiRdo = [...lista1];
-
-    if (totale > ITEMS) {
-      const pagine = Math.ceil(totale / ITEMS);
-      const promises = [];
-
-      for (let p = 2; p <= pagine; p++) {
-        promises.push(fetchPagina(p, ITEMS, campo, verso));
-      }
-
-      const results = await Promise.all(promises);
-
-      for (const r of results) {
-        const lista = findLista(r) || [];
-        tuttiRdo = tuttiRdo.concat(lista);
-      }
-    }
-
    const rdoNormalizzate = tuttiRdo.map(r => {
   const rdo = normalizzaMepa(r);
 
@@ -149,9 +119,10 @@ app.get('/rdo', async (req, res) => {
     console.log(`Totale RdO caricate: ${rdoNormalizzate.length}`);
 
     res.json({
-      listaRdoAperte: rdoNormalizzate,
-      totale: rdoNormalizzate.length
-    });
+  listaRdoAperte: rdoNormalizzate,
+  totaleDisponibile: totale,
+  totaleCaricato: rdoNormalizzate.length
+});
 
   } catch (err) {
     console.error('Proxy error:', err.message);
