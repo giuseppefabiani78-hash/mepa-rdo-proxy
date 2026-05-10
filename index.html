@@ -63,6 +63,16 @@ main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 .card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: box-shadow 0.2s, transform 0.2s; animation: fadeUp 0.3s ease both; min-width: 0; overflow: hidden; }
 .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
 
+  .card-urgent {
+  border: 1px solid #f59e0b !important;
+  box-shadow: 0 0 0 1px rgba(245,158,11,0.15);
+}
+
+.card-urgent:hover {
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.08),
+    0 0 0 2px rgba(245,158,11,0.25);
+}
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; min-width: 0; }
 
 /* SOURCE BADGES */
