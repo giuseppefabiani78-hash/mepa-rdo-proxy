@@ -126,8 +126,10 @@ console.log('Cache MISS');
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
     const ITEMS = 50;
+    const pagina = parseInt(req.query.pagina || '1', 10);
 
     const first = await fetchPagina(1, ITEMS, campo, verso);
+    const first = await fetchPagina(pagina, ITEMS, campo, verso);
 
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
@@ -149,6 +151,8 @@ console.log('Cache MISS');
   listaRdoAperte: rdoNormalizzate,
   totaleDisponibile: totale,
   totaleCaricato: rdoNormalizzate.length,
+  paginaCorrente: pagina,
+  totalePagine: Math.ceil(totale / ITEMS),
   cache: "MISS",
   aggiornato: new Date().toISOString()
 };
