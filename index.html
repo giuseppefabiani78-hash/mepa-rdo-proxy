@@ -772,7 +772,7 @@ function applyFilter() {
   });
 
   document.getElementById('cnt').innerHTML = '<strong>' + filt.length + '</strong> RdO';
-  pg = 1;
+  if (!window.serverPagination) pg = 1;
   render();
 }
 
@@ -859,6 +859,7 @@ function renderPag() {
 function goP(p) {
   if (p < 1) return;
 
+  window.serverPagination = true;
   pg = p;
 
   document.getElementById('grid').innerHTML = '';
