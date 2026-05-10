@@ -346,6 +346,17 @@ else if (
 
       <div class="card-title">${r.titoloBando||'—'}</div>
 
+${regione ? `
+<div style="
+  margin-top:-4px;
+  font-size:11px;
+  font-weight:600;
+  color:#0f8f6f;
+">
+📍 ${regione}
+</div>
+` : ''}
+
       <div class="meta-row">
         <div class="meta-item" style="overflow:hidden">
           <span class="meta-l">Ente</span>
