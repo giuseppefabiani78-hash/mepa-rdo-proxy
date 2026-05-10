@@ -108,6 +108,21 @@ app.get('/debug', async (req, res) => {
   }
 });
 
+app.get('/rdo', async (req, res) => {
+  try {
+
+    const campo = req.query.campo || 'dataPubblicazione';
+    const verso = req.query.verso || 'desc';
+    const ITEMS = 100;
+
+    const first = await fetchPagina(1, ITEMS, campo, verso);
+
+    const lista1 = findLista(first) || [];
+    const totale = findTotale(first) || lista1.length;
+
+    console.log(`Totale RdO disponibili: ${totale}`);
+
+    let tuttiRdo = [...lista1];
    const rdoNormalizzate = tuttiRdo.map(r => {
   const rdo = normalizzaMepa(r);
 
