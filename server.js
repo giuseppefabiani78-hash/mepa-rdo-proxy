@@ -114,20 +114,24 @@ app.get('/debug', async (req, res) => {
 
 app.get('/rdo', async (req, res) => {
   try {
-const now = Date.now();
-
-if (cacheRdo && (now - cacheTime < CACHE_DURATION)) {
-  console.log('Cache HIT');
-
-  return res.json(cacheRdo);
-}
-
-console.log('Cache MISS');
     
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
     const ITEMS = 24;
     const pagina = parseInt(req.query.pagina || '1', 10);
+    const cacheKey = `${pagina}-${campo}-${verso}`;
+const cached = cacheRdo[cacheKey];
+
+if (cached && (Date.now() - cached.time < CACHE_DURATION)) {
+  console.log('Cache HIT pagina', pagina);
+
+  return res.json({
+    ...cached.data,
+    cache: "HIT"
+  });
+}
+
+console.log('Cache MISS pagina', pagina);
 
         const first = await fetchPagina(pagina, ITEMS, campo, verso);
 
@@ -157,8 +161,10 @@ console.log('Cache MISS');
   aggiornato: new Date().toISOString()
 };
 
-cacheRdo = responseData;
-cacheTime = Date.now();
+cacheRdo[cacheKey] = {
+  time: Date.now(),
+  data: responseData
+};
 
 res.json(responseData);
 
