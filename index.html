@@ -782,7 +782,7 @@ function render() {
     const urg = d !== null && d <= 5;
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
-    const regione = stimaRegione(r);
+    const regione = r.regioneStimata || '';
 
     return `<div class="card ${urg ? 'card-urgent' : ''}" style="animation-delay:${(i % PER) * 0.025}s">
       <div class="card-top">
