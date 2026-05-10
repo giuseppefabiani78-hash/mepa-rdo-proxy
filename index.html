@@ -713,6 +713,7 @@ async function loadRdo() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const data = await res.json();
+    window.totaleDisponibile = data.totaleDisponibile || 0;
     all = data.listaRdoAperte || [];
 
     if (!all.length) {
@@ -834,7 +835,7 @@ function render() {
 }
 
 function renderPag() {
-  const tot = Math.ceil(filt.length / PER);
+  const tot = Math.ceil((window.totaleDisponibile || filt.length) / PER);
   const el = document.getElementById('pag');
 
   if (tot <= 1) {
