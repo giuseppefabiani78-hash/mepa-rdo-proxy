@@ -709,7 +709,7 @@ async function loadRdo() {
   document.getElementById('err').style.display = 'none';
 
   try {
-    const res = await fetch(`${PROXY}?pagina=${pg}`);
+    const res = await fetch(PROXY);
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const data = await res.json();
