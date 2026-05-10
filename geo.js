@@ -17,22 +17,44 @@ const ALIAS_REGIONI = {
   "AUSL VALLE D'AOSTA": "Valle d'Aosta"
 };
 
+function normalizzaTesto(testo) {
+  return String(testo || '')
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function stimaRegione(rdo) {
-  const testo = [
+  const testo = normalizzaTesto([
     rdo.descrizioneEnte || '',
     rdo.stazioneAppaltante || '',
     rdo.enteCommittente || '',
     rdo.titoloBando || '',
     rdo.descrizioneBando || '',
     rdo.descrizione || ''
-  ].join(' ').toUpperCase();
+  ].join(' '));
 
   for (const alias in ALIAS_REGIONI) {
-    if (testo.includes(alias)) return ALIAS_REGIONI[alias];
+    const aliasNorm = normalizzaTesto(alias);
+    const regexAlias = new RegExp(`\\b${aliasNorm}\\b`, 'i');
+
+    if (regexAlias.test(testo)) {
+      return ALIAS_REGIONI[alias];
+    }
   }
 
-  for (const comune in COMUNI_REGIONI) {
-    if (testo.includes(comune)) return COMUNI_REGIONI[comune];
+  const comuniOrdinati = Object.keys(COMUNI_REGIONI).sort((a, b) => b.length - a.length);
+
+  for (const comune of comuniOrdinati) {
+    const comuneNorm = normalizzaTesto(comune);
+    const regexComune = new RegExp(`\\b${comuneNorm}\\b`, 'i');
+
+    if (regexComune.test(testo)) {
+      return COMUNI_REGIONI[comune];
+    }
   }
 
   return '';
