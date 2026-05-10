@@ -128,8 +128,7 @@ console.log('Cache MISS');
     const ITEMS = 50;
     const pagina = parseInt(req.query.pagina || '1', 10);
 
-    const first = await fetchPagina(1, ITEMS, campo, verso);
-    const first = await fetchPagina(pagina, ITEMS, campo, verso);
+        const first = await fetchPagina(pagina, ITEMS, campo, verso);
 
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
