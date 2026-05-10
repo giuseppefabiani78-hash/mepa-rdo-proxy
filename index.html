@@ -4,290 +4,144 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RdO Aperte MEPA | MepaLab24</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #0F0F0F;
-  --ink-2: #3D3D3D;
-  --ink-3: #7A7A7A;
-  --border: #E8E8E8;
-  --bg: #F5F5F3;
-  --white: #FFFFFF;
-  --pink: #FF1493;
-  --pink-soft: #FF149315;
-  --green-wa: #128C7E;
-  --green-wa-hover: #0a6b60;
-  --accent: #FF1493;
-  --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-  --shadow-hover: 0 4px 12px rgba(0,0,0,0.1), 0 12px 32px rgba(0,0,0,0.06);
+  --ink: #0F0F0F; --ink-2: #3D3D3D; --ink-3: #7A7A7A;
+  --border: #E8E8E8; --bg: #F5F5F3; --white: #fff;
+  --pink: #FF1493; --pink-bg: rgba(255,20,147,0.1);
+  --wa: #128C7E; --wa-hover: #0a6b60;
+  --r: 12px;
 }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; overflow-x: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; -webkit-font-smoothing: antialiased; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-
-/* ── HEADER ── */
-header {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo-link { display: flex; align-items: center; text-decoration: none; }
-.logo-link img { height: 52px; width: auto; }
-.header-actions { display: flex; align-items: center; gap: 10px; }
-.btn-wa-header {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--green-wa); color: #fff;
-  padding: 8px 16px; border-radius: 8px;
-  font-size: 13px; font-weight: 500;
-  text-decoration: none; white-space: nowrap;
-  transition: background 0.2s;
-}
-.btn-wa-header:hover { background: var(--green-wa-hover); }
-.btn-wa-header svg { flex-shrink: 0; }
-.btn-refresh {
-  display: flex; align-items: center; gap: 6px;
-  background: transparent; color: var(--ink-3);
-  border: 1px solid var(--border);
-  padding: 7px 12px; border-radius: 8px;
-  font-size: 12px; font-family: 'DM Sans', sans-serif;
-  cursor: pointer; transition: all 0.2s; white-space: nowrap;
-}
-.btn-refresh:hover { background: var(--bg); color: var(--ink-2); }
+/* HEADER */
+header { background: #fff; border-bottom: 1px solid var(--border); height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo img { height: 44px; width: auto; display: block; }
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+.btn-refresh { background: none; border: 1px solid var(--border); color: var(--ink-3); padding: 7px 12px; border-radius: 8px; font-size: 12px; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.btn-refresh:hover { background: var(--bg); }
 .btn-refresh:disabled { opacity: 0.4; cursor: default; }
+.btn-wa-hdr { background: var(--wa); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: inherit; text-decoration: none; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.btn-wa-hdr:hover { background: var(--wa-hover); }
 
-/* ── HERO ── */
-.hero {
-  background: var(--ink);
-  padding: 40px 24px 36px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(255,20,147,0.18) 0%, transparent 70%);
-}
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.7);
-  font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase;
-  padding: 5px 12px; border-radius: 20px;
-  margin-bottom: 16px;
-}
-.hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); display: inline-block; animation: pulse 2s infinite; }
-.hero h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.5px; position: relative; }
+/* HERO */
+.hero { background: #0F0F0F; padding: 36px 24px 32px; text-align: center; position: relative; overflow: hidden; }
+.hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(255,20,147,0.2), transparent 70%); pointer-events: none; }
+.hero-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 14px; position: relative; z-index: 1; }
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); animation: pulse 2s infinite; }
+.hero h1 { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.5px; position: relative; z-index: 1; margin-bottom: 8px; }
 .hero h1 em { color: var(--pink); font-style: normal; }
-.hero p { font-size: 14px; color: rgba(255,255,255,0.55); position: relative; max-width: 480px; margin: 0 auto; }
+.hero p { font-size: 14px; color: rgba(255,255,255,0.5); position: relative; z-index: 1; }
 
-/* ── TOOLBAR ── */
-.toolbar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  position: sticky; top: 64px; z-index: 90;
-}
-.search-wrap { flex: 1; min-width: 200px; position: relative; }
-.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; }
-#search {
-  width: 100%; border: 1px solid var(--border);
-  padding: 9px 14px 9px 36px;
-  font-size: 13px; font-family: 'DM Sans', sans-serif;
-  border-radius: 8px; outline: none;
-  background: var(--bg); color: var(--ink);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-#search:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,20,147,0.08); background: #fff; }
-#sort-sel {
-  border: 1px solid var(--border); padding: 9px 12px;
-  font-size: 13px; font-family: 'DM Sans', sans-serif;
-  border-radius: 8px; outline: none; background: var(--bg);
-  color: var(--ink); cursor: pointer;
-}
-#sort-sel:focus { border-color: var(--pink); }
-#cnt {
-  font-size: 12px; color: var(--ink-3);
-  white-space: nowrap; margin-left: auto;
-  font-family: 'DM Mono', monospace;
-}
+/* TOOLBAR */
+.toolbar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 64px; z-index: 90; }
+.search-wrap { flex: 1; min-width: 180px; position: relative; }
+.search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; flex-shrink: 0; }
+#search { width: 100%; border: 1px solid var(--border); padding: 9px 12px 9px 34px; font-size: 13px; font-family: inherit; border-radius: 8px; outline: none; background: var(--bg); }
+#search:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-bg); background: #fff; }
+#sort-sel { border: 1px solid var(--border); padding: 9px 10px; font-size: 13px; font-family: inherit; border-radius: 8px; outline: none; background: var(--bg); cursor: pointer; }
+#cnt { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-3); white-space: nowrap; margin-left: auto; }
 #cnt strong { color: var(--pink); }
 
-/* ── MAIN ── */
+/* MAIN */
 main { padding: 20px; max-width: 1440px; margin: 0 auto; }
 
-/* ── LOADING / ERROR / EMPTY ── */
-#err {
-  display: none;
-  background: #FFF1F1; border: 1px solid #FFD5D5;
-  padding: 14px 18px; color: #C0392B;
-  border-radius: var(--radius); margin-bottom: 16px; font-size: 13px;
-}
-#empty {
-  text-align: center; padding: 80px 20px; color: var(--ink-3);
-}
-.empty-spinner {
-  width: 40px; height: 40px; border: 3px solid var(--border);
-  border-top-color: var(--pink); border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 20px;
-}
+/* STATES */
+#err { display: none; background: #FFF1F1; border: 1px solid #FFD5D5; padding: 14px 18px; color: #C0392B; border-radius: var(--r); margin-bottom: 16px; font-size: 13px; }
+#empty { text-align: center; padding: 80px 20px; color: var(--ink-3); }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px; }
 #empty h2 { font-size: 17px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
-#empty p { font-size: 13px; }
 
-/* ── GRID ── */
-#grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-  gap: 14px;
-  width: 100%;
-}
+/* GRID */
+#grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
 
-/* ── CARD ── */
-.card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  display: flex; flex-direction: column; gap: 12px;
-  box-shadow: var(--shadow);
-  transition: box-shadow 0.2s, transform 0.2s;
-  animation: fadeUp 0.3s ease both;
-}
-.card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+/* CARD */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: box-shadow 0.2s, transform 0.2s; animation: fadeUp 0.3s ease both; min-width: 0; overflow: hidden; }
+.card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
 
-.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.rdo-chip {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px; font-weight: 500;
-  color: var(--pink); background: var(--pink-soft);
-  padding: 3px 8px; border-radius: 6px;
-  white-space: nowrap; flex-shrink: 0;
-}
-.cat-chip {
-  font-size: 10px; font-weight: 500;
-  color: var(--ink-3); background: var(--bg);
-  padding: 3px 8px; border-radius: 6px;
-  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  text-align: right;
-}
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; min-width: 0; }
+.rdo-chip { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--pink); background: var(--pink-bg); padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+.cat-chip { font-size: 10px; color: var(--ink-3); background: var(--bg); padding: 3px 7px; border-radius: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; text-align: right; }
 
-.card-title {
-  font-size: 13px; font-weight: 600; color: var(--ink);
-  line-height: 1.45; display: -webkit-box;
-  -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
+.card-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-width: 0; }
-.meta { display: flex; flex-direction: column; gap: 2px; }
+/* METADATA ROWS */
+.meta-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; min-width: 0; }
+.meta-item { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.meta-item.right { text-align: right; flex-shrink: 0; }
 .meta-l { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
-.meta-v { font-size: 13px; color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100%; }
+.meta-v { font-size: 13px; color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .meta-v.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
-.meta-v.valore { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: var(--ink); }
+.meta-v.bold { font-family: 'DM Mono', monospace; font-weight: 700; color: var(--ink); }
 .meta-v.urg { color: #D4380D; font-weight: 600; }
-.days { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
+.days { font-size: 10px; color: var(--ink-3); }
 .days.urg { color: #D4380D; }
 
 .divider { height: 1px; background: var(--border); }
 
-/* ── CTA WHATSAPP ── */
-.btn-wa {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%;
-  background: var(--green-wa);
-  color: #fff; border: none;
-  padding: 11px 16px; border-radius: 9px;
-  font-size: 13px; font-weight: 600;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer; text-decoration: none;
-  transition: background 0.2s, transform 0.1s;
-  letter-spacing: -0.1px;
-}
-.btn-wa:hover { background: var(--green-wa-hover); transform: scale(1.01); }
-.btn-wa:active { transform: scale(0.99); }
+/* WA BUTTON */
+.btn-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--wa); color: #fff; border: none; padding: 11px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+.btn-wa:hover { background: var(--wa-hover); }
 
-/* ── PAGINATION ── */
+/* PAGINATION */
 .pag { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 24px 0 8px; flex-wrap: wrap; }
-.pag button {
-  border: 1px solid var(--border); background: var(--white);
-  padding: 6px 12px; font-size: 12px; font-family: 'DM Mono', monospace;
-  cursor: pointer; border-radius: 8px; color: var(--ink-2);
-  transition: all 0.15s;
-}
-.pag button:hover:not(:disabled) { border-color: var(--pink); color: var(--pink); background: var(--pink-soft); }
+.pag button { border: 1px solid var(--border); background: #fff; padding: 6px 12px; font-size: 12px; font-family: 'DM Mono', monospace; cursor: pointer; border-radius: 8px; color: var(--ink-2); transition: all 0.15s; }
+.pag button:hover:not(:disabled) { border-color: var(--pink); color: var(--pink); }
 .pag button.active { background: var(--pink); color: #fff; border-color: var(--pink); }
 .pag button:disabled { opacity: 0.35; cursor: default; }
-.pag-dots { color: var(--ink-3); font-family: 'DM Mono', monospace; font-size: 12px; padding: 0 2px; }
 
-/* ── FOOTER ── */
 #ts { text-align: center; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--ink-3); padding: 12px 0 4px; }
-footer {
-  background: var(--ink); color: rgba(255,255,255,0.5);
-  text-align: center; padding: 20px;
-  font-size: 12px; margin-top: 32px;
-}
-footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
-footer a:hover { color: var(--pink); }
-.footer-inner { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
 
-/* ── ANIMATIONS ── */
+footer { background: var(--ink); color: rgba(255,255,255,0.45); text-align: center; padding: 20px; font-size: 12px; margin-top: 32px; }
+footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+footer a:hover { color: var(--pink); }
+
+/* ANIMATIONS */
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.spin-icon { display: inline-block; animation: spin 0.8s linear infinite; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.spin-anim { display: inline-block; animation: spin 0.8s linear infinite; }
 
-/* ── MOBILE ── */
-@media (max-width: 640px) {
-  header { padding: 0 16px; height: 56px; }
-  .logo-link img { height: 38px; }
-  .btn-wa-header span { display: none; }
-  .hero { padding: 28px 16px 24px; }
+/* MOBILE */
+@media (max-width: 600px) {
+  header { height: 56px; padding: 0 14px; }
+  .logo img { height: 36px; }
+  .btn-wa-hdr span { display: none; }
+  .hero { padding: 24px 16px 20px; }
   .hero h1 { font-size: 22px; }
-  .toolbar { padding: 10px 14px; top: 56px; }
-  main { padding: 14px; }
-  #grid { grid-template-columns: 1fr; gap: 10px; }
+  .toolbar { padding: 10px 12px; top: 56px; }
+  main { padding: 12px; }
+  #grid { gap: 10px; }
   .card { padding: 14px; }
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
-  <a class="logo-link" href="https://www.mepalab24.com">
+  <a class="logo" href="https://www.mepalab24.com">
     <img src="logo.png" alt="MepaLab24">
   </a>
-  <div class="header-actions">
+  <div class="hdr-right">
     <button class="btn-refresh" id="load-btn" onclick="loadRdo()">
       <span id="btn-icon">↻</span> Aggiorna
     </button>
-    <a class="btn-wa-header" href="https://wa.me/393517128322?text=Ciao%20MepaLab24%2C%20vorrei%20informazioni%20sulla%20consulenza%20MEPA" target="_blank">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <a class="btn-wa-hdr" href="https://wa.me/393517128322?text=Ciao%20MepaLab24%2C%20vorrei%20informazioni%20sulla%20consulenza%20MEPA" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       <span>Contattaci</span>
     </a>
   </div>
 </header>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-tag"><span></span> Live · acquistinretepa.it</div>
+  <div class="hero-tag"><span class="hero-dot"></span> Live · acquistinretepa.it</div>
   <h1>RdO Aperte su <em>MEPA</em></h1>
-  <p>Trova le gare attive oggi e richiedi supporto per partecipare con la nostra consulenza</p>
+  <p>Trova le gare attive oggi e richiedi supporto per partecipare</p>
 </div>
 
-<!-- TOOLBAR -->
 <div class="toolbar" id="toolbar" style="display:none">
   <div class="search-wrap">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -302,11 +156,10 @@ footer a:hover { color: var(--pink); }
   <span id="cnt"></span>
 </div>
 
-<!-- MAIN -->
 <main>
   <div id="err"></div>
   <div id="empty">
-    <div class="empty-spinner"></div>
+    <div class="spinner"></div>
     <h2>Caricamento in corso…</h2>
     <p>Recupero le RdO aperte da acquistinretepa.it</p>
   </div>
@@ -316,10 +169,8 @@ footer a:hover { color: var(--pink); }
 </main>
 
 <footer>
-  <div class="footer-inner">
-    <div>© 2026 <a href="https://www.mepalab24.com">MepaLab24</a> · il tuo ufficio MEPA 24/7</div>
-    <div>Dati in tempo reale · <a href="https://wa.me/393517128322">+39 351 712 8322</a></div>
-  </div>
+  © 2026 <a href="https://www.mepalab24.com">MepaLab24</a> · il tuo ufficio MEPA 24/7 ·
+  <a href="https://wa.me/393517128322">+39 351 712 8322</a>
 </footer>
 
 <script>
@@ -328,12 +179,12 @@ const WA = '393517128322';
 const PER = 24;
 let all = [], filt = [], pg = 1;
 
-const WA_ICON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+const WA_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
 function fmt(v) {
   if (!v) return '—';
   const n = parseFloat(String(v).replace(',', '.'));
-  return isNaN(n) ? '—' : n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+  return isNaN(n) ? '—' : n.toLocaleString('it-IT', {minimumFractionDigits:2}) + ' €';
 }
 function fmtD(iso) {
   if (!iso) return '—';
@@ -352,7 +203,7 @@ async function loadRdo() {
   const btn = document.getElementById('load-btn');
   const icon = document.getElementById('btn-icon');
   btn.disabled = true;
-  icon.className = 'spin-icon';
+  icon.className = 'spin-anim';
   document.getElementById('err').style.display = 'none';
   try {
     const res = await fetch(PROXY);
@@ -365,9 +216,8 @@ async function loadRdo() {
     document.getElementById('ts').textContent = 'Aggiornato: ' + new Date().toLocaleString('it-IT') + ' · Fonte: acquistinretepa.it';
     applyFilter();
   } catch(e) {
-    const eb = document.getElementById('err');
-    eb.style.display = 'block';
-    eb.textContent = '⚠ ' + e.message;
+    document.getElementById('err').style.display = 'block';
+    document.getElementById('err').textContent = '⚠ ' + e.message;
     document.getElementById('empty').style.display = 'none';
   } finally {
     btn.disabled = false;
@@ -399,35 +249,35 @@ function render() {
     const urg = d !== null && d <= 5;
     const cat = r.categorieMerceologiche?.[0]?.descrizione || '';
     const ente = r.descrizioneEnte || r.stazioneAppaltante || '—';
-    return `<div class="card" style="animation-delay:${(i%PER)*0.03}s">
+    return `<div class="card" style="animation-delay:${(i%PER)*0.025}s">
       <div class="card-top">
         <span class="rdo-chip">RdO ${r.numeroRdo||'—'}</span>
         ${cat ? `<span class="cat-chip" title="${cat}">${cat}</span>` : ''}
       </div>
-      <div class="card-title" title="${(r.titoloBando||'').replace(/"/g,"'")}">${r.titoloBando||'—'}</div>
-      <div class="card-grid">
-        <div class="meta">
+      <div class="card-title">${r.titoloBando||'—'}</div>
+      <div class="meta-row">
+        <div class="meta-item" style="overflow:hidden">
           <span class="meta-l">Ente</span>
           <span class="meta-v" title="${ente}">${ente}</span>
         </div>
-        <div class="meta">
+        <div class="meta-item right">
           <span class="meta-l">Valore</span>
-          <span class="meta-v valore">${fmt(r.valore)}</span>
+          <span class="meta-v bold">${fmt(r.valore)}</span>
         </div>
-        <div class="meta">
+      </div>
+      <div class="meta-row">
+        <div class="meta-item">
           <span class="meta-l">Pubblicata</span>
           <span class="meta-v mono">${fmtD(r.dataPubblicazione)}</span>
         </div>
-        <div class="meta">
+        <div class="meta-item right">
           <span class="meta-l">Scadenza</span>
           <span class="meta-v mono ${urg?'urg':''}">${urg?'⚠ ':''}${fmtD(r.dataScadenzaBando)}</span>
-          ${d !== null ? `<span class="days ${urg?'urg':''}">${d} giorni rimasti</span>` : ''}
+          ${d !== null ? `<span class="days ${urg?'urg':''}">${d}gg rimasti</span>` : ''}
         </div>
       </div>
       <div class="divider"></div>
-      <a class="btn-wa" href="${waLink(r)}" target="_blank">
-        ${WA_ICON} Vuoi partecipare? Richiedi consulenza
-      </a>
+      <a class="btn-wa" href="${waLink(r)}" target="_blank">${WA_SVG} Vuoi partecipare? Richiedi consulenza</a>
     </div>`;
   }).join('');
   renderPag();
@@ -438,13 +288,12 @@ function renderPag() {
   const el = document.getElementById('pag');
   if (tot <= 1) { el.innerHTML = ''; return; }
   let h = `<button onclick="goP(${pg-1})" ${pg===1?'disabled':''}>← Prec</button>`;
-  const pages = Array.from({length: tot}, (_, i) => i+1);
-  pages.forEach((p, idx) => {
-    if (p===1||p===tot||Math.abs(p-pg)<=1) {
-      if (idx > 0 && pages[idx-1] !== p-1) h += `<span class="pag-dots">…</span>`;
-      h += `<button onclick="goP(${p})" class="${p===pg?'active':''}">${p}</button>`;
+  for (let i = 1; i <= tot; i++) {
+    if (i===1||i===tot||Math.abs(i-pg)<=1) {
+      if (i > 1 && i-1 !== (h.match(/goP\((\d+)\)/g)||[]).map(m=>+m.match(/\d+/)[0]).slice(-1)[0]) h += `<span style="color:#aaa;font-family:monospace;font-size:12px;padding:0 2px">…</span>`;
+      h += `<button onclick="goP(${i})" class="${i===pg?'active':''}">${i}</button>`;
     }
-  });
+  }
   h += `<button onclick="goP(${pg+1})" ${pg===tot?'disabled':''}>Succ →</button>`;
   el.innerHTML = h;
 }
