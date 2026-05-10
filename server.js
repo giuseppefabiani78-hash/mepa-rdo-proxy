@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 const { stimaRegione } = require('./geo');
+let cacheRdo = null;
+let cacheTime = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minuti
 
 app.use(cors({ 
   origin: '*', 
@@ -110,7 +113,16 @@ app.get('/debug', async (req, res) => {
 
 app.get('/rdo', async (req, res) => {
   try {
+const now = Date.now();
 
+if (cacheRdo && (now - cacheTime < CACHE_DURATION)) {
+  console.log('Cache HIT');
+
+  return res.json(cacheRdo);
+}
+
+console.log('Cache MISS');
+    
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
     const ITEMS = 50;
@@ -133,11 +145,18 @@ app.get('/rdo', async (req, res) => {
 
     console.log(`Totale RdO caricate: ${rdoNormalizzate.length}`);
 
-    res.json({
+  const responseData = {
   listaRdoAperte: rdoNormalizzate,
   totaleDisponibile: totale,
-  totaleCaricato: rdoNormalizzate.length
-});
+  totaleCaricato: rdoNormalizzate.length,
+  cache: "MISS",
+  aggiornato: new Date().toISOString()
+};
+
+cacheRdo = responseData;
+cacheTime = Date.now();
+
+res.json(responseData);
 
   } catch (err) {
     console.error('Proxy error:', err.message);
