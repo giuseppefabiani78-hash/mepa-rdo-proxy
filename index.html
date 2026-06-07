@@ -878,7 +878,7 @@ const loadingMessages = [
   "🔎 Ricerca delle ultime opportunità pubblicate sul MePA...",
   "📂 Analisi automatica di categorie e settori merceologici...",
   "📈 Elaborazione delle opportunità più rilevanti...",
-  "🚀 Dashboard in preparazione..."
+  "✅ Quasi pronto. Stiamo preparando i risultati..."
 ];
 
 let loadingIndex = 0;
@@ -889,7 +889,7 @@ setInterval(() => {
 
   loadingIndex = (loadingIndex + 1) % loadingMessages.length;
   title.textContent = loadingMessages[loadingIndex];
-}, 2500);
+}, 4000);
   
   window.addEventListener('load', loadRdo);
 </script>
