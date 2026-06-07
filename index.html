@@ -623,9 +623,15 @@ footer a:hover { color: var(--mepa-green-light); }
 
   <div id="empty">
     <div class="spinner"></div>
-    <h2>Caricamento in corso…</h2>
-    <p>Recupero le RdO aperte da acquistinretepa.it</p>
-  </div>
+
+    <h2 id="loadingTitle">
+        🔎 Ricerca delle ultime opportunità pubblicate sul MePA...
+    </h2>
+
+    <p id="loadingSub">
+        MepaLab24 • Monitoraggio avanzato delle opportunità di gara
+    </p>
+</div>
 
   <div id="grid"></div>
   <div class="pag" id="pag"></div>
@@ -868,7 +874,24 @@ function goP(p) {
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-window.addEventListener('load', loadRdo);
+const loadingMessages = [
+  "🔎 Ricerca delle ultime opportunità pubblicate sul MePA...",
+  "📂 Analisi automatica di categorie e settori merceologici...",
+  "📈 Elaborazione delle opportunità più rilevanti...",
+  "🚀 Dashboard in preparazione..."
+];
+
+let loadingIndex = 0;
+
+setInterval(() => {
+  const title = document.getElementById('loadingTitle');
+  if (!title) return;
+
+  loadingIndex = (loadingIndex + 1) % loadingMessages.length;
+  title.textContent = loadingMessages[loadingIndex];
+}, 2500);
+  
+  window.addEventListener('load', loadRdo);
 </script>
 
 </body>
