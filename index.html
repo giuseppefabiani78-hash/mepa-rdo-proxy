@@ -251,21 +251,23 @@ main {
 }
 
 .mepa-spinner {
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  margin-bottom: 18px;
-  opacity: 0.9;
-  animation: mepaSpin 2.8s linear infinite;
+  display: block;
+  margin: 0 auto 18px;
+  animation: mepaSpin 6s linear infinite, mepaFade 2.5s ease-in-out infinite;
 }
 
 @keyframes mepaSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mepaFade {
+  0% { opacity: .55; }
+  50% { opacity: 1; }
+  100% { opacity: .55; }
 }
 
 #empty h2 {
@@ -630,7 +632,7 @@ footer a:hover { color: var(--mepa-green-light); }
   <div id="err"></div>
 
   <div id="empty">
-    <img src="logoML24-spinner.png" class="mepa-spinner" alt="MepaLab24 loading">
+    <img src="LogoML24.png" class="mepa-spinner" alt="MepaLab24 loading">
     <h2 id="loadingTitle">
         🔎 Ricerca delle ultime opportunità pubblicate sul MePA...
     </h2>
