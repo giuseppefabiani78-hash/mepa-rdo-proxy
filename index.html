@@ -883,12 +883,16 @@ const loadingMessages = [
 
 let loadingIndex = 0;
 
-setInterval(() => {
+let loadingTimer = setInterval(() => {
   const title = document.getElementById('loadingTitle');
   if (!title) return;
 
-  loadingIndex = (loadingIndex + 1) % loadingMessages.length;
-  title.textContent = loadingMessages[loadingIndex];
+  if (loadingIndex < loadingMessages.length - 1) {
+    loadingIndex++;
+    title.textContent = loadingMessages[loadingIndex];
+  } else {
+    clearInterval(loadingTimer);
+  }
 }, 4000);
   
   window.addEventListener('load', loadRdo);
