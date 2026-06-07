@@ -182,6 +182,14 @@ app.get('/rdo', async (req, res) => {
   }
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'MEPA RdO Proxy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`MEPA Proxy running on port ${PORT}`);
 });
