@@ -113,6 +113,24 @@ app.get('/debug', async (req, res) => {
   }
 });
 
+app.get('/debug-adi', async (req, res) => {
+  try {
+    const raw = await fetchPagina(
+      1,
+      50,
+      'dataPubblicazione',
+      'desc',
+      'ADI'
+    );
+
+    res.json(raw);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
 async function handleVetrinaBandi(req, res, filter = 'RDO') {
   try {
     const campo = req.query.campo || 'dataPubblicazione';
