@@ -162,12 +162,39 @@ app.get('/debug', async (req, res) => {
 
 app.get('/debug-adi', async (req, res) => {
   try {
-    const raw = await fetchPaginaAdi(
-  1,
-  20
-);
+    const response = await fetch(ADI_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Origin': 'https://www.acquistinretepa.it',
+    'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=ADI',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+  },
+  body: JSON.stringify({
+    nmAvviso: '',
+    isArchive: false,
+    dataPubblicazione: null,
+    dataFine: null,
+    stazioneAppaltante: '',
+    enteCommittente: '',
+    mostra: '',
+    categoria: [],
+    stato: [],
+    orderBy: { campo: 'dtInizio', verso: 'desc' },
+    paginazione: { pagina: 1, itemPagina: 20, totaleIniziative: 0 },
+    strumento: [{ id: 'AVVISO_DI_INDAGINE', label: 'Avviso di Indagine', totale: 0 }],
+    tempo: { dataDa: null, dataA: null }
+  })
+});
 
-    res.json(raw);
+const text = await response.text();
+
+res.json({
+  status: response.status,
+  contentType: response.headers.get('content-type'),
+  preview: text.slice(0, 1000)
+});
   } catch (err) {
     res.status(500).json({
       error: err.message
