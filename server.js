@@ -92,6 +92,10 @@ async function fetchPaginaAdi(pagina, itemPagina = 20, campo = 'dtInizio', verso
       'Accept': 'application/json',
       'Origin': 'https://www.acquistinretepa.it',
       'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=ADI',
+      'X-Requested-With': 'XMLHttpRequest',
+      'Sec-Fetch-Site': 'same-origin',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Dest': 'empty',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     },
     body: JSON.stringify(payload)
