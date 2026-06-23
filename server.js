@@ -6,6 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
+const ADI_URL = 'https://www.acquistinretepa.it/adi/api/v1/vetrina/ricerca';
 
 let cacheRdo = {};
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -49,6 +50,48 @@ async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione'
       'Accept': 'application/json',
       'Origin': 'https://www.acquistinretepa.it',
       'Referer': `https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=${filter}`,
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function fetchPaginaAdi(pagina, itemPagina = 20, campo = 'dtInizio', verso = 'desc') {
+  const payload = {
+    nmAvviso: '',
+    isArchive: false,
+    dataPubblicazione: null,
+    dataFine: null,
+    stazioneAppaltante: '',
+    enteCommittente: '',
+    mostra: '',
+    categoria: [],
+    stato: [],
+    orderBy: { campo, verso },
+    paginazione: { pagina, itemPagina, totaleIniziative: 0 },
+    strumento: [
+      {
+        id: 'AVVISO_DI_INDAGINE',
+        label: 'Avviso di Indagine',
+        totale: 0
+      }
+    ],
+    tempo: { dataDa: null, dataA: null }
+  };
+
+  const response = await fetch(ADI_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Origin': 'https://www.acquistinretepa.it',
+      'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=ADI',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     },
     body: JSON.stringify(payload)
@@ -115,13 +158,10 @@ app.get('/debug', async (req, res) => {
 
 app.get('/debug-adi', async (req, res) => {
   try {
-    const raw = await fetchPagina(
-      1,
-      50,
-      'dataPubblicazione',
-      'desc',
-      'ADI'
-    );
+    const raw = await fetchPaginaAdi(
+  1,
+  20
+);
 
     res.json(raw);
   } catch (err) {
