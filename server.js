@@ -27,10 +27,14 @@ app.get('/', (req, res) => {
   });
 });
 
-async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc') {
+async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione', verso = 'desc', filter = 'RDO') {
   const payload = {
     isArchive: false,
-    strumento: [{ label: "RDO APERTE", totale: 1, id: 1 }],
+    strumento: [
+  filter === 'ADI'
+    ? { label: "AVVISI DI INDAGINE", totale: 1, id: 6 }
+    : { label: "RDO APERTE", totale: 1, id: 1 }
+],
     categoria: [],
     idt: "",
     orderBy: { campo, verso },
@@ -44,7 +48,7 @@ async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione'
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Origin': 'https://www.acquistinretepa.it',
-      'Referer': 'https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=RDO',
+      'Referer': `https://www.acquistinretepa.it/opencms/opencms/vetrina_bandi.html?filter=${filter}`,
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
     },
     body: JSON.stringify(payload)
@@ -129,7 +133,8 @@ app.get('/rdo', async (req, res) => {
 
     console.log('Cache MISS');
 
-    const first = await fetchPagina(1, ITEMS, campo, verso);
+    const filter = 'RDO';
+    const first = await fetchPagina(1, ITEMS, campo, verso, filter);
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
 
@@ -142,7 +147,7 @@ app.get('/rdo', async (req, res) => {
       const promises = [];
 
       for (let p = 2; p <= pagine; p++) {
-        promises.push(fetchPagina(p, ITEMS, campo, verso));
+        promises.push(fetchPagina(p, ITEMS, campo, verso, filter));
       }
 
       const results = await Promise.all(promises);
