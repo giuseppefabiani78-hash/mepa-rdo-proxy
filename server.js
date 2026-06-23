@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 const MEPA_URL = 'https://www.acquistinretepa.it/publicservices/vetrineservices/getAltriBandiRdoAperte';
 
 let cacheRdo = {};
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minuti
+const CACHE_DURATION = 5 * 60 * 1000;
 
 app.use(cors({
   origin: '*',
@@ -22,7 +22,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'MEPA RdO Proxy',
+    service: 'MEPA Vetrina Bandi Proxy',
     timestamp: new Date().toISOString()
   });
 });
@@ -31,12 +31,12 @@ async function fetchPagina(pagina, itemPagina = 100, campo = 'dataPubblicazione'
   const payload = {
     isArchive: false,
     strumento: [
-  filter === 'ADI'
-    ? { label: "AVVISI DI INDAGINE", totale: 1, id: 6 }
-    : { label: "RDO APERTE", totale: 1, id: 1 }
-],
+      filter === 'ADI'
+        ? { label: 'AVVISI DI INDAGINE', totale: 1, id: 6 }
+        : { label: 'RDO APERTE', totale: 1, id: 1 }
+    ],
     categoria: [],
-    idt: "",
+    idt: '',
     orderBy: { campo, verso },
     paginazione: { pagina, itemPagina },
     tempo: { dataDa: null, dataA: null }
@@ -95,12 +95,12 @@ function findTotale(obj, depth = 0) {
   return null;
 }
 
-function normalizzaMepa(r) {
+function normalizzaMepa(r, filter = 'RDO') {
   return {
     ...r,
-    source: "MEPA",
-    sourceLabel: "MePA",
-    sourceType: "national"
+    source: filter === 'ADI' ? 'MEPA_AVVISI_INDAGINE' : 'MEPA_RDO',
+    sourceLabel: filter === 'ADI' ? 'Avvisi di Indagine MePA' : 'RdO Aperte MePA',
+    sourceType: 'national'
   };
 }
 
@@ -113,32 +113,25 @@ app.get('/debug', async (req, res) => {
   }
 });
 
-app.get('/rdo', async (req, res) => {
+async function handleVetrinaBandi(req, res, filter = 'RDO') {
   try {
     const campo = req.query.campo || 'dataPubblicazione';
     const verso = req.query.verso || 'desc';
     const ITEMS = 100;
 
-    const cacheKey = `${campo}-${verso}`;
+    const cacheKey = `${filter}-${campo}-${verso}`;
     const cached = cacheRdo[cacheKey];
 
     if (cached && (Date.now() - cached.time < CACHE_DURATION)) {
-      console.log('Cache HIT');
-
       return res.json({
         ...cached.data,
-        cache: "HIT"
+        cache: 'HIT'
       });
     }
 
-    console.log('Cache MISS');
-
-    const filter = 'RDO';
     const first = await fetchPagina(1, ITEMS, campo, verso, filter);
     const lista1 = findLista(first) || [];
     const totale = findTotale(first) || lista1.length;
-
-    console.log(`Totale RdO disponibili: ${totale}`);
 
     let tuttiRdo = [...lista1];
 
@@ -158,17 +151,19 @@ app.get('/rdo', async (req, res) => {
       }
     }
 
-    const rdoNormalizzate = tuttiRdo.map(r => {
-      const rdo = normalizzaMepa(r);
-      rdo.regioneStimata = stimaRegione(rdo);
-      return rdo;
+    const listaNormalizzata = tuttiRdo.map(r => {
+      const item = normalizzaMepa(r, filter);
+      item.regioneStimata = stimaRegione(item);
+      return item;
     });
 
     const responseData = {
-      listaRdoAperte: rdoNormalizzate,
+      fonte: filter === 'ADI' ? 'Avvisi di Indagine MePA' : 'RdO Aperte MePA',
+      filter,
+      listaRdoAperte: listaNormalizzata,
       totaleDisponibile: totale,
-      totaleCaricato: rdoNormalizzate.length,
-      cache: "MISS",
+      totaleCaricato: listaNormalizzata.length,
+      cache: 'MISS',
       aggiornato: new Date().toISOString()
     };
 
@@ -177,20 +172,26 @@ app.get('/rdo', async (req, res) => {
       data: responseData
     };
 
-    console.log(`Totale RdO caricate: ${rdoNormalizzate.length}`);
-
     res.json(responseData);
 
   } catch (err) {
     console.error('Proxy error:', err.message);
     res.status(500).json({ error: err.message });
   }
+}
+
+app.get('/rdo', (req, res) => {
+  handleVetrinaBandi(req, res, 'RDO');
+});
+
+app.get('/avvisi-indagine', (req, res) => {
+  handleVetrinaBandi(req, res, 'ADI');
 });
 
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
-    service: 'MEPA RdO Proxy',
+    service: 'MEPA Vetrina Bandi Proxy',
     timestamp: new Date().toISOString()
   });
 });
